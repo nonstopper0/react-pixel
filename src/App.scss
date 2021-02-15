@@ -1,3 +1,29 @@
+@import './Styles/media';
+
 .App {
   text-align: center;
+  font-family: 'Pixel';
+}
+
+.homepage-header-div {
+  font-size: 2rem;
+  color: white;
+  h1 {
+    color: red;
+  }
+  @include phone {
+    font-size: .70rem;
+  }
+}
+
+.button-div {
+  button {
+    font-family: 'Pixel';
+    padding: 2rem;
+    font-size: 3rem;
+    margin: 5rem;
+    @include phone {
+      font-size: 1rem;
+    }
+  }
 }

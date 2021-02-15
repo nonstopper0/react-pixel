@@ -1,23 +1,26 @@
-
+import React, { useState, useContext } from 'react';
 import './App.scss';
 
+import Modal from './Modules/Modal/Modal'
+
 function App() {
+  const [modal, openModal] = useState(false);
+  const [width, setWidth] = useState(16)
+  const [height, setHeight] = useState(16)
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <div className="homepage-header-div">
+        <h1>React Pixel</h1>
+        <h3>An application for creating pixel art on the web!</h3>
+      </div>
+      <div className="button-div">
+        <button onClick={() => openModal(!modal)}>START NOW</button>
+      </div>
+      <h2>{width}, {height}</h2>
+
+      { modal ? <Modal step={['*', 2]} input={[width, height]} return={[setWidth, setHeight]} choices={['width', 'height']}/> : null }
+
     </div>
   );
 }
