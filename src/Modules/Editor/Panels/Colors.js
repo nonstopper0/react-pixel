@@ -7,7 +7,6 @@ export default function Colors(props) {
     }
     return (
         <CompactPicker 
-        width={1000}
         disableAlpha={true}
         onChangeComplete={handleChangeComplete}
         />
