@@ -8,24 +8,38 @@ export default function Editor(props) {
     const [firstLoad, setFirstLoad] = useState(true) 
     const [dimension, setDimension] = useState(props.dimension)
     const [zoom, setZoom] = useState(500)
+    const [top, setTop] = useState(50);
+    const [left, setLeft] = useState(50);
     const [currentColor, setCurrentColor] = useState()
     const [colorPanel, openColorPanel] = useState(false)
 
-    const handleZoom = (y) => {
-        if (y > 0) {
-            let newZoom = zoom - 50
-            console.log(newZoom)
+    const handleZoom = (e) => {
+        if (e.deltaY > 0) {
             setZoom((zoom) => zoom - 50)
-        } else if (y < 0) {
+        } else if (e.deltaY < 0) {
             setZoom((zoom) => zoom + 50)
+            if (e.x < ((window.innerWidth / 2)-window.innerWidth/4)) {
+                setLeft((left) => {
+                    if (left < 70) {
+                        return
+                    }
+                    return left + 5
+                })
+            } else if (e.x > ((window.innerWidth / 2)+window.innerWidth/4) && left > 0 ) {
+                setLeft((left) => {
+                    if (left > 30) {
+                        return
+                    }
+                    return left - 5
+                })
+            }
         }
     }
 
     useEffect(() => {
         console.log('adding event listeneder')
         document.addEventListener('wheel', (e) => {
-            console.log(e)
-            handleZoom(e.deltaY)
+            handleZoom(e)
         })
     }, [])
 
@@ -41,7 +55,7 @@ export default function Editor(props) {
                 </button>
                 {colorPanel ? <Colors changeColor={setCurrentColor} /> : null}
           </nav>
-          <div className="canvas-container">
+          <div style={{top: `${top}%`, left: `${left}%`}} className="canvas-container">
             <Canvas zoom={zoom} dimension={dimension}/>
           </div>
       </div>
