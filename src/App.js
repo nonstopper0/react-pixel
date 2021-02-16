@@ -11,7 +11,8 @@ function App() {
   const [dimension, setDimension] = useState(16)
 
   const updateDimensionCheck = (newNumber) => {
-    if (newNumber >= 16 && newNumber <= 256) {
+    // current limits for pixel art is between 16 and 64. any higher than 64 and my current zoom function runs horrificly due to a re render every run
+    if (newNumber >= 16 && newNumber <= 64) {
       setDimension(newNumber)
     }
   }

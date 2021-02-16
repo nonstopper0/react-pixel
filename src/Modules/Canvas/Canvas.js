@@ -1,7 +1,7 @@
 import React, { useRef } from 'react'
 import Row from "./Row"
 
-export default function Canvas(props) {
+const Canvas = React.memo(props => {
     const { dimension, currentColor, zoom } = props
 
     const canvasRef = useRef();
@@ -18,4 +18,6 @@ export default function Canvas(props) {
             {rows}
         </div>
     )
-}
+})
+
+export default Canvas

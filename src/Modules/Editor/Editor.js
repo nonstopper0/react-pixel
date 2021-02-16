@@ -15,25 +15,31 @@ export default function Editor(props) {
 
     const handleZoom = (e) => {
         if (e.deltaY > 0) {
-            setZoom((zoom) => zoom - 50)
+            setZoom((zoom) => zoom > 50 ? zoom - 50 : zoom)
         } else if (e.deltaY < 0) {
-            setZoom((zoom) => zoom + 50)
-            if (e.x < ((window.innerWidth / 2)-window.innerWidth/4)) {
-                setLeft((left) => {
-                    if (left < 70) {
-                        return
-                    }
-                    return left + 5
-                })
-            } else if (e.x > ((window.innerWidth / 2)+window.innerWidth/4) && left > 0 ) {
-                setLeft((left) => {
-                    if (left > 30) {
-                        return
-                    }
-                    return left - 5
-                })
-            }
+            setZoom((zoom) => zoom < 800 ? zoom + 50 : zoom)
         }
+            // Commenting this out because it is just not needed and overcomplicates.
+            // if (e.x < ((window.innerWidth / 2)-window.innerWidth/4)) {
+            //     setLeft((left) => {
+            //         if (left < 70) {
+            //             return
+            //         }
+            //         return left + 5
+            //     })
+            // } else if (e.x > ((window.innerWidth / 2)+window.innerWidth/4) && left > 0 ) {
+            //     setLeft((left) => {
+            //         if (left > 30) {
+            //             return
+            //         }
+            //         return left - 5
+            //     })
+            // }
+    }
+
+    const handleColor = (color) => {
+        setCurrentColor((currentColor) => color)
+        console.log(currentColor)
     }
 
     useEffect(() => {
@@ -53,10 +59,10 @@ export default function Editor(props) {
           <nav className="left-nav">
                 <button onClick={()=> openColorPanel(!colorPanel)}>Color
                 </button>
-                {colorPanel ? <Colors changeColor={setCurrentColor} /> : null}
+                {colorPanel ? <Colors changeColor={handleColor} /> : null}
           </nav>
           <div style={{top: `${top}%`, left: `${left}%`}} className="canvas-container">
-            <Canvas zoom={zoom} dimension={dimension}/>
+            <Canvas currentColor={currentColor} zoom={zoom} dimension={dimension}/>
           </div>
       </div>
     );
