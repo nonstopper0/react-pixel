@@ -5,10 +5,9 @@ import Modal from './Modules/Modal/Modal'
 
 function App() {
   const [modal, openModal] = useState(false);
-  const [width, setWidth] = useState(16)
-  const [height, setHeight] = useState(16)
   const [dimension, setDimension] = useState(16)
 
+  //limit dimension sizes
   const updateDimensions = (newDimension) => {
     if (newDimension >= 16 && newDimension <= 1024) {
       setDimension(newDimension)
