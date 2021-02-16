@@ -3,8 +3,10 @@ import './Editor.scss';
 
 export default function Editor(props) {
   return (
-    <div className="Editor">
-        editor
+    <div className="editor">
+        <nav className="top-nav">
+            
+        </nav>
     </div>
   );
 }

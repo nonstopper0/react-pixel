@@ -21,6 +21,9 @@ function App() {
     setTimeout(() => {
       openEditor(true)
     }, 500)
+    setTimeout(() => {
+      openTransition(false)
+    }, 1500)
   }
 
   return (
@@ -32,9 +35,12 @@ function App() {
             <h1>React Pixel</h1>
             <h3>An application for creating pixel art on the web!</h3>
           </div>
-          <div className="button-div">
+          <div className="dimension-div">
             <h4>Canvas Size: {dimension} X {dimension}</h4>
+            <button onClick={() => updateDimensionCheck(dimension / 2)}>-</button>
             <button onClick={() => updateDimensionCheck(dimension * 2)}>+</button>
+          </div>
+          <div className="button-div">
             <button onClick={() => startEditor()}>START NOW</button>
           </div>
       </React.Fragment>
