@@ -10,7 +10,7 @@ const Canvas = React.memo(props => {
 
     for (let i = 0; i < dimension; i++) {
         console.log('redrawing')
-        rows.push(<Row key={i} zoom={zoom} dimension={dimension} currentColor={currentColor}/>)
+        rows.push(<Row rid={i} key={i} zoom={zoom} dimension={dimension} currentColor={currentColor}/>)
     }
 
     return (

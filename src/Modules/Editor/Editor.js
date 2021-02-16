@@ -10,7 +10,7 @@ export default function Editor(props) {
     const [zoom, setZoom] = useState(500)
     const [top, setTop] = useState(50);
     const [left, setLeft] = useState(50);
-    const [currentColor, setCurrentColor] = useState()
+    const [currentColor, setCurrentColor] = useState('#bbbbbb')
     const [colorPanel, openColorPanel] = useState(false)
 
     const handleZoom = (e) => {
