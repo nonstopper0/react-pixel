@@ -11,9 +11,11 @@ export default function Modal(props) {
               {choice}
             </h3>
             <button onClick={()=>props.return[index](
-              props.step[0] == "*" ? props.input[index]*props.step[1] : 3 || props.step == "addition"
+              props.step[0] == "*" ? props.input[index]*props.step[1] : props.input[index]+props.step[1]
+            )}>+</button>
+            <button onClick={()=>props.return[index](
+              props.step[0] == "*" ? props.input[index]/props.step[1] : props.input[index]-props.step[1]
             )}>-</button>
-            <button onClick={()=>props.return[index](choice)}>+</button>
           </div>
         )
       })}

@@ -7,6 +7,13 @@ function App() {
   const [modal, openModal] = useState(false);
   const [width, setWidth] = useState(16)
   const [height, setHeight] = useState(16)
+  const [dimension, setDimension] = useState(16)
+
+  const updateDimensions = (newDimension) => {
+    if (newDimension >= 16 && newDimension <= 1024) {
+      setDimension(newDimension)
+    }
+  }
 
   return (
     <div className="App">
@@ -17,9 +24,9 @@ function App() {
       <div className="button-div">
         <button onClick={() => openModal(!modal)}>START NOW</button>
       </div>
-      <h2>{width}, {height}</h2>
+      <h2>{dimension} x {dimension}</h2>
 
-      { modal ? <Modal step={['*', 2]} input={[width, height]} return={[setWidth, setHeight]} choices={['width', 'height']}/> : null }
+      { modal ? <Modal step={['*', 2]} input={[dimension]} return={[updateDimensions]} choices={['Dimension']}/> : null }
 
     </div>
   );
