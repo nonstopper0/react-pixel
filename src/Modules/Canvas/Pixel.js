@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import './Pixel.scss'
 
 export default function Pixel(props) {
-    const { currentColor, dimension } = props
+    const { currentColor, dimension, zoom } = props
 
     const [pixelColor, setPixelColor] = useState("#fff")
     const [oldColor, setOldColor] = useState(pixelColor)
@@ -31,7 +31,7 @@ export default function Pixel(props) {
         onClick={applyColor}
         onMouseEnter={changeColorOnHover}
         onMouseLeave={resetColor}
-        style={{ backgroundColor: pixelColor, width: `${300/dimension}px`, height: `${300/dimension}px` }}
+        style={{ backgroundColor: pixelColor, width: `${zoom/dimension}px`, height: `${zoom/dimension}px` }}
       ></div>
     )
 }

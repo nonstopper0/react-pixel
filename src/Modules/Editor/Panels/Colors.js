@@ -1,14 +1,15 @@
-import { SketchPicker } from 'react-color'
+import { CompactPicker } from 'react-color'
 
-export default function Colors() {
+export default function Colors(props) {
     
-    const handleChange = (color, event) => {
-        console.log(color, event)
+    const handleChangeComplete = (color) => {
+        console.log(color.hex)
+        props.changeColor(color.hex)
     }
     return (
-        <SketchPicker 
+        <CompactPicker 
         disableAlpha={true}
-        onChange={() => handleChange}
+        onChangeComplete={handleChangeComplete}
         />
     )
 }
