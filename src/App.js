@@ -2,31 +2,43 @@ import React, { useState, useContext } from 'react';
 import './App.scss';
 
 import Modal from './Modules/Modal/Modal'
+import Editor from './Modules/Editor/Editor'
+import Transition from './Modules/Page Transition/Transition'
 
 function App() {
-  const [modal, openModal] = useState(false);
+  const [editor, openEditor] = useState(false)
+  const [transition, openTransition] = useState(false)
   const [dimension, setDimension] = useState(16)
 
-  //limit dimension sizes
-  const updateDimensions = (newDimension) => {
-    if (newDimension >= 16 && newDimension <= 1024) {
-      setDimension(newDimension)
+  const updateDimensionCheck = (newNumber) => {
+    if (newNumber >= 16 && newNumber <= 1024) {
+      setDimension(newNumber)
     }
+  }
+
+  const startEditor = () => {
+    openTransition(true)
+    setTimeout(() => {
+      openEditor(true)
+    }, 500)
   }
 
   return (
     <div className="App">
-      <div className="homepage-header-div">
-        <h1>React Pixel</h1>
-        <h3>An application for creating pixel art on the web!</h3>
-      </div>
-      <div className="button-div">
-        <button onClick={() => openModal(!modal)}>START NOW</button>
-      </div>
-      <h2>{dimension} x {dimension}</h2>
-
-      { modal ? <Modal step={['*', 2]} input={[dimension]} return={[updateDimensions]} choices={['Dimension']}/> : null }
-
+      { transition ? <Transition /> : null }
+      { editor ? <Editor /> : 
+        <React.Fragment>
+          <div className="homepage-header-div">
+            <h1>React Pixel</h1>
+            <h3>An application for creating pixel art on the web!</h3>
+          </div>
+          <div className="button-div">
+            <h4>Canvas Size: {dimension} X {dimension}</h4>
+            <button onClick={() => updateDimensionCheck(dimension * 2)}>+</button>
+            <button onClick={() => startEditor()}>START NOW</button>
+          </div>
+      </React.Fragment>
+    }
     </div>
   );
 }
