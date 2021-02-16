@@ -36,13 +36,11 @@ function App() {
             <h3>An application for creating pixel art on the web!</h3>
           </div>
           <div className="dimension-div">
-            <h4>Canvas Size: {dimension} X {dimension}</h4>
+            <h4>Canvas Size: <span>{dimension}</span> X <span>{dimension}</span></h4>
             <button onClick={() => updateDimensionCheck(dimension / 2)}>-</button>
             <button onClick={() => updateDimensionCheck(dimension * 2)}>+</button>
           </div>
-          <div className="button-div">
-            <button onClick={() => startEditor()}>START NOW</button>
-          </div>
+          <button className="start-button" onClick={() => startEditor()}>START NOW</button>
       </React.Fragment>
     }
     </div>

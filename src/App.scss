@@ -8,22 +8,50 @@
 .homepage-header-div {
   font-size: 2rem;
   color: white;
-  h1 {
-    color: red;
-  }
+
   @include phone {
     font-size: .70rem;
   }
+
+  h1 {
+    color: red;
+  }
+
 }
 
-.button-div {
-  button {
-    font-family: 'Pixel';
-    padding: 2rem;
+.start-button {
+  font-family: 'Pixel';
+  padding: 20px;
+  width: 200px;
+  margin-top: 20px;
+
+  @include phone {
+      width: 100px;
+  }
+}
+
+.dimension-div {
+    color: white;
     font-size: 3rem;
-    margin: 5rem;
+    
+    h4 {
+      margin: 10px;
+    }
+
+
     @include phone {
       font-size: 1rem;
     }
-  }
+    
+    span {
+      color: red;
+    }
+
+    button {
+      font-family: 'Pixel';
+      text-align: center;
+      padding: 1rem;
+      margin: 0px;
+      width: 200px;
+    }
 }
