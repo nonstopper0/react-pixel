@@ -11,7 +11,7 @@ function App() {
   const [dimension, setDimension] = useState(16)
 
   const updateDimensionCheck = (newNumber) => {
-    if (newNumber >= 16 && newNumber <= 1024) {
+    if (newNumber >= 16 && newNumber <= 256) {
       setDimension(newNumber)
     }
   }
@@ -29,7 +29,7 @@ function App() {
   return (
     <div className="App">
       { transition ? <Transition /> : null }
-      { editor ? <Editor /> : 
+      { editor ? <Editor dimension={dimension}/> : 
         <React.Fragment>
           <div className="homepage-header-div">
             <h1>React Pixel</h1>
