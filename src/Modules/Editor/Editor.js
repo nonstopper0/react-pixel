@@ -47,31 +47,30 @@ export default function Editor(props) {
             // }
     }
 
+    // called from Colors.js through props
     const handleColor = (color) => {
         setCurrentColor(() => color);
     }
 
+    // called from left-nav to toggle active classes on certain tools
     const handleTool = (e) => {
             e.target.classList.toggle('active');
             console.log(e.target.classList);
     }
 
-    const openDropDown = (e) => {
+    // this code layout is super odd but it works perfectly? I think it is because the react state hooks dont update within the same function when using them this way so manipulating the setDropDown data works fine
+    const handleDropDown = (e) => {
         if (dropDownOpen) {
-            closeDropDown()
+            setDropDownOpen(false)
+            let divToClose = document.querySelector(`.${dropDownOpen}`)
+            divToClose.classList.add('hidden')
             if (dropDownOpen === e.target.innerHTML) {
                 return
             }
         }
-            setDropDownOpen(e.target.innerHTML)
-            let divToOpen = document.querySelector(`.${e.target.innerHTML}`)
-            divToOpen.classList.remove('hidden')
-    }
-
-    const closeDropDown = () => {
-        setDropDownOpen(false)
-        let divToClose = document.querySelector(`.${dropDownOpen}`)
-        divToClose.classList.add('hidden')
+        setDropDownOpen(e.target.innerHTML)
+        let divToOpen = document.querySelector(`.${e.target.innerHTML}`)
+        divToOpen.classList.remove('hidden')
     }
     
     const downloadImage = async (e) => {
@@ -86,7 +85,10 @@ export default function Editor(props) {
         .catch(err => {
             console.log('gone wrong: ', err)
         })
+    }
 
+    const resize = () => {
+        setDimension(32)
     }
 
 
@@ -94,19 +96,19 @@ export default function Editor(props) {
       <div className="editor">
           <nav className="top-nav">
               <div className="dd-wrapper">
-                <button onClick={(e) => openDropDown(e)}>File</button>
+                <button onClick={(e) => handleDropDown(e)}>File</button>
                 <div className="drop-down hidden File">
                     <button onClick={()=> downloadImage()}>Download</button>
                 </div>
               </div>
               <div className="dd-wrapper">
-                <button onClick={(e) => openDropDown(e)}>Edit</button>
+                <button onClick={(e) => handleDropDown(e)}>Edit</button>
                 <div className="drop-down hidden Edit">
-                    <button>Resize</button>
+                    <button onClick={() => resize()}>Resize</button>
                 </div>
               </div>
               <div className="dd-wrapper">
-                <button onClick={(e) => openDropDown(e)}>Help</button>
+                <button onClick={(e) => handleDropDown(e)}>Help</button>
                 <div className="drop-down hidden Help">
                 </div>
               </div>
