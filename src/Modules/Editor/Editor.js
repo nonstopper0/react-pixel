@@ -8,7 +8,6 @@ import Brush from './Panels/Brush';
 import { BsBrush } from 'react-icons/bs'
 
 export default function Editor(props) {
-    const [firstLoad, setFirstLoad] = useState(true) 
     const [dimension, setDimension] = useState(props.dimension)
     const [zoom, setZoom] = useState(500)
     const [top, setTop] = useState(50);
@@ -47,8 +46,7 @@ export default function Editor(props) {
     }
 
     const handleColor = (color) => {
-        setCurrentColor((currentColor) => color)
-        console.log(currentColor)
+        setCurrentColor(() => color)
     }
 
     const handleButton = (e) => {
@@ -73,10 +71,10 @@ export default function Editor(props) {
                     openBrush(!brush)
                     handleButton(e)
                 }}><BsBrush /></button>
-                { brush ? <Brush currentColor={currentColor} /> : null}
+                <Brush currentColor={currentColor} />
                 
           </nav>
-          <div style={{top: `${top}%`, left: `${left}%`}} className="canvas-container">
+          <div className="canvas-container">
             <Canvas currentColor={currentColor} zoom={zoom} dimension={dimension}/>
           </div>
       </div>

@@ -1,17 +1,17 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 
 
 export default function Brush(props) {
-    const [color, setColor] = useState(props.currentColor);
 
     // setup listener to listen for brush location
     useEffect(() => {
+        console.log('attaching event listener to brush with color' + props.currentColor)
         document.getElementById("canvas").addEventListener('mousedown', handleClick );
 
         return function cleanup() {
             document.getElementById("canvas").removeEventListener('mousedown', handleClick );
         }
-    }, [])
+    })
 
     // const handleDrag = (e) => {
     //     if (Math.floor(e.timeStamp) % 10 === 0) {
@@ -30,15 +30,19 @@ export default function Brush(props) {
 
     // }
 
-    const handleClick = (e) => {
-        console.log('clicked')
+    let handleClick = (e) => {
         let below = document.elementFromPoint(e.clientX, e.clientY)
         if (below.classList.contains("pixel")) {
-            console.log(props.currentColor)
             below.style.backgroundColor = props.currentColor
         }
     }
 
+    function log() {
+        console.log(props.currentColor)
+        return props.currentColor
+    }
 
-    return null
+    return (
+        <button onClick={()=> log()}>Here</button>
+    )
 }
