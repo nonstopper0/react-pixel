@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { toPng } from 'html-to-image'
+import { toPng, toSvg } from 'html-to-image'
 import './Editor.scss';
 
 import Canvas from '../Canvas/Canvas';
@@ -16,11 +16,11 @@ export default function Editor(props) {
     const [brush, openBrush] = useState(false)
     const [currentColor, setCurrentColor] = useState('#bbbbbb')
     const [gridLines, turnOnGrid] = useState(false)
+    const [dropDownOpen, setDropDownOpen] = useState(false)
     
     useEffect(() => {
-        document.addEventListener('wheel', (e) => {
-            handleZoom(e);
-        })
+        document.addEventListener('wheel', handleZoom);
+        return document.removeEventListener('wheel', handleZoom);
     }, [])
     
     const handleZoom = (e) => {
@@ -51,18 +51,33 @@ export default function Editor(props) {
         setCurrentColor(() => color);
     }
 
-    const handleButton = (e) => {
+    const handleTool = (e) => {
             e.target.classList.toggle('active');
             console.log(e.target.classList);
+    }
+
+    const openDropDown = (e) => {
+        if (dropDownOpen && dropDownOpen !== e.target.innerHTML) {
+            closeDropDown()   
+        }
+            setDropDownOpen(e.target.innerHTML)
+            let divToOpen = document.querySelector(`.${e.target.innerHTML}`)
+            divToOpen.classList.toggle('hidden')
+    }
+
+    const closeDropDown = () => {
+        setDropDownOpen(false)
+        let divToClose = document.querySelector(`.${dropDownOpen}`)
+        divToClose.classList.toggle('hidden')
     }
     
     const downloadImage = async (e) => {
        let canvas = await document.querySelector('#canvas');
 
-       toPng(canvas)
-        .then(dataUrl => {
+       toSvg(canvas)
+        .then(data => {
             let img = new Image();
-            img.src = dataUrl
+            img.src = data
             document.body.appendChild(img)
         })
         .catch(err => {
@@ -75,9 +90,23 @@ export default function Editor(props) {
     return (
       <div className="editor">
           <nav className="top-nav">
-              <div>File</div>
-              <div>Edit</div>
-              <div>Help</div>
+              <div className="dd-wrapper">
+                <button onClick={(e) => openDropDown(e)}>File</button>
+                <div className="drop-down hidden File">
+                    <button onClick={()=> downloadImage()}>Download</button>
+                </div>
+              </div>
+              <div className="dd-wrapper">
+                <button onClick={(e) => openDropDown(e)}>Edit</button>
+                <div className="drop-down hidden Edit">
+                    <button>Resize</button>
+                </div>
+              </div>
+              <div className="dd-wrapper">
+                <button onClick={(e) => openDropDown(e)}>Help</button>
+                <div className="drop-down hidden Help">
+                </div>
+              </div>
           </nav>
           <nav className="left-nav">
 
@@ -85,7 +114,7 @@ export default function Editor(props) {
 
                 <button style={{backgroundColor: currentColor}} className="left-buttons" onClick={(e)=> {
                     openBrush(!brush)
-                    handleButton(e)
+                    handleTool(e)
                 }}><BsBrush /></button>
                 { brush ? <Brush currentColor={currentColor} /> : null }
                 

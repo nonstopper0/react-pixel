@@ -10,19 +10,33 @@
         align-items: center;
         font-family: 'Pixel';
 
-        button {
+        .dd-wrapper { 
+            margin-left: 3%;
             position: relative;
-            background-color: transparent;
-            font-family: 'Pixel';
-            border: none;
-            color: white;
-            margin-left:  2%;
-            height: 100%;
-            cursor: pointer;
-            
-            &:focus {
-                outline: none;
+
+            > button {
+                background-color: transparent;
+                font-family: 'Pixel';
+                border: none;
+                color: white;
+                cursor: pointer;
+
+                &:focus {
+                    outline: none;
+                }
             }
+
+            
+        }
+
+        .drop-down {
+            position: absolute;
+            
+        }
+
+        .hidden {
+            display: none;
+            opacity: 0;
         }
     }
     .left-nav {
@@ -55,6 +69,7 @@
 }
 
 .canvas-container {
+    cursor: pointer;
     position: absolute;
     transform: translate(-50%, -50%);
     width: fit-content;
