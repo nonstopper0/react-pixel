@@ -1,4 +1,5 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
+import { toPng } from 'html-to-image'
 import './Editor.scss';
 
 import Canvas from '../Canvas/Canvas';
@@ -14,18 +15,19 @@ export default function Editor(props) {
     const [left, setLeft] = useState(50);
     const [brush, openBrush] = useState(false)
     const [currentColor, setCurrentColor] = useState('#bbbbbb')
+    const [gridLines, turnOnGrid] = useState(false)
     
     useEffect(() => {
         document.addEventListener('wheel', (e) => {
-            handleZoom(e)
+            handleZoom(e);
         })
     }, [])
     
     const handleZoom = (e) => {
         if (e.deltaY > 0) {
-            setZoom((zoom) => zoom > 50 ? zoom - 50 : zoom)
+            setZoom((zoom) => zoom > 50 ? zoom - 50 : zoom);
         } else if (e.deltaY < 0) {
-            setZoom((zoom) => zoom < 800 ? zoom + 50 : zoom)
+            setZoom((zoom) => zoom < 800 ? zoom + 50 : zoom);
         }
             // Commenting this out because it is just not needed and overcomplicates.
             // if (e.x < ((window.innerWidth / 2)-window.innerWidth/4)) {
@@ -46,22 +48,36 @@ export default function Editor(props) {
     }
 
     const handleColor = (color) => {
-        setCurrentColor(() => color)
+        setCurrentColor(() => color);
     }
 
     const handleButton = (e) => {
-        console.log(e.target)
-        e.target.classList.toggle('active')
-        console.log(e.target.classList);
+            e.target.classList.toggle('active');
+            console.log(e.target.classList);
+    }
+    
+    const downloadImage = async (e) => {
+       let canvas = await document.querySelector('#canvas');
+
+       toPng(canvas)
+        .then(dataUrl => {
+            let img = new Image();
+            img.src = dataUrl
+            document.body.appendChild(img)
+        })
+        .catch(err => {
+            console.log('gone wrong: ', err)
+        })
+
     }
 
 
     return (
       <div className="editor">
           <nav className="top-nav">
-              <button>File</button>
-              <button>Edit</button>
-              <button>Help</button>
+              <div>File</div>
+              <div>Edit</div>
+              <div>Help</div>
           </nav>
           <nav className="left-nav">
 
@@ -71,7 +87,7 @@ export default function Editor(props) {
                     openBrush(!brush)
                     handleButton(e)
                 }}><BsBrush /></button>
-                <Brush currentColor={currentColor} />
+                { brush ? <Brush currentColor={currentColor} /> : null }
                 
           </nav>
           <div className="canvas-container">
