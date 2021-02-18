@@ -14,7 +14,7 @@ const Canvas = React.memo(props => {
     }
 
     return (
-        <div ref={canvasRef}>
+        <div id="canvas" ref={canvasRef}>
             {rows}
         </div>
     )

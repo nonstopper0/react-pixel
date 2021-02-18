@@ -5,6 +5,8 @@ import Canvas from '../Canvas/Canvas';
 import Colors from './Panels/Colors';
 import Brush from './Panels/Brush';
 
+import { BsBrush } from 'react-icons/bs'
+
 export default function Editor(props) {
     const [firstLoad, setFirstLoad] = useState(true) 
     const [dimension, setDimension] = useState(props.dimension)
@@ -49,6 +51,12 @@ export default function Editor(props) {
         console.log(currentColor)
     }
 
+    const handleButton = (e) => {
+        console.log(e.target)
+        e.target.classList.toggle('active')
+        console.log(e.target.classList);
+    }
+
 
     return (
       <div className="editor">
@@ -58,9 +66,15 @@ export default function Editor(props) {
               <button>Help</button>
           </nav>
           <nav className="left-nav">
+
                 <Colors changeColor={handleColor}/>
-                <button onClick={()=> openBrush(!brush)}></button>
-                { brush ? <Brush /> : null}
+
+                <button style={{backgroundColor: currentColor}} className="left-buttons" onClick={(e)=> {
+                    openBrush(!brush)
+                    handleButton(e)
+                }}><BsBrush /></button>
+                { brush ? <Brush currentColor={currentColor} /> : null}
+                
           </nav>
           <div style={{top: `${top}%`, left: `${left}%`}} className="canvas-container">
             <Canvas currentColor={currentColor} zoom={zoom} dimension={dimension}/>
