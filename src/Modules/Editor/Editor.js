@@ -57,18 +57,21 @@ export default function Editor(props) {
     }
 
     const openDropDown = (e) => {
-        if (dropDownOpen && dropDownOpen !== e.target.innerHTML) {
-            closeDropDown()   
+        if (dropDownOpen) {
+            closeDropDown()
+            if (dropDownOpen === e.target.innerHTML) {
+                return
+            }
         }
             setDropDownOpen(e.target.innerHTML)
             let divToOpen = document.querySelector(`.${e.target.innerHTML}`)
-            divToOpen.classList.toggle('hidden')
+            divToOpen.classList.remove('hidden')
     }
 
     const closeDropDown = () => {
         setDropDownOpen(false)
         let divToClose = document.querySelector(`.${dropDownOpen}`)
-        divToClose.classList.toggle('hidden')
+        divToClose.classList.add('hidden')
     }
     
     const downloadImage = async (e) => {

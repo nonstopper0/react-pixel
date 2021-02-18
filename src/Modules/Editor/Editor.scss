@@ -8,7 +8,6 @@
         flex-direction: row;
         justify-content: flex-start;
         align-items: center;
-        font-family: 'Pixel';
 
         .dd-wrapper { 
             margin-left: 3%;
@@ -16,9 +15,10 @@
 
             > button {
                 background-color: transparent;
-                font-family: 'Pixel';
                 border: none;
                 color: white;
+                padding: 10px;
+                font-family: 'Pixel';
                 cursor: pointer;
 
                 &:focus {
@@ -32,6 +32,12 @@
         .drop-down {
             position: absolute;
             
+            button {
+                background: transparent;
+                color: white;
+                border: none;
+                font-family: 'Pixel';
+            }
         }
 
         .hidden {
