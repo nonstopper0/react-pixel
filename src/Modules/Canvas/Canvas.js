@@ -7,6 +7,7 @@ const Canvas = React.memo(props => {
     const canvasRef = useRef();
 
     let rows = []
+    
 
     for (let i = 0; i < dimension; i++) {
         console.log('redrawing')
