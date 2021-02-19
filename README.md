@@ -8,4 +8,4 @@ ReactJS with functional components and Hooks
 
 # Usage
 
-Check it out at : [HERE](https://nonstopper0.github.io/react-pixel/)
+### Check it out : [HERE](https://nonstopper0.github.io/react-pixel/)
