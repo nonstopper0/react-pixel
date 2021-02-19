@@ -1,11 +1,12 @@
 # React Pixel 
 
-A lightweight application for creating pixel art on the web
+#### A React application for creating pixel art on the web built from the "ground up" using basic javascript dom modifiers and math. 
 
 # Technologies Used
 
-ReactJS with functional components and Hooks
+#### 1. ReactJS Hooks and functional components
+#### 2. SCSS
 
 # Usage
 
-### Check it out : [HERE](https://nonstopper0.github.io/react-pixel/)
+#### Check it out : [HERE](https://nonstopper0.github.io/react-pixel/)
