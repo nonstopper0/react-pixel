@@ -15,7 +15,8 @@ export default function Editor(props) {
     const [left, setLeft] = useState(50);
     const [brush, openBrush] = useState(false)
     const [currentColor, setCurrentColor] = useState('#bbbbbb')
-    const [gridLines, turnOnGrid] = useState(false)
+    const [gridLines, setGridLines] = useState(false)
+    const [hoverHelper, setHoverHelper] = useState(true);
     const [dropDownOpen, setDropDownOpen] = useState(false)
     
     useEffect(() => {

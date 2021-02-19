@@ -1,44 +1,28 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect } from 'react'
 import { findRenderedDOMComponentWithClass } from 'react-dom/test-utils'
 import './Pixel.scss'
 
 export default function Pixel(props) {
     const { currentColor, dimension, zoom, pid, rid } = props
     const [pixelColor, setPixelColor] = useState("#fff")
-    const self = useRef(null)
     const [oldColor, setOldColor] = useState(pixelColor)
     const [canChangeColor, setCanChangeColor] = useState(true);
     const [border, setBorder] = useState(false)
 
-    useEffect(() => {
-    }, [])
-
-    function applyColor() {
-        setPixelColor(currentColor)
-        setCanChangeColor(false)
-        setBorder(false)
+    const changeColorOnHover = (e) => {
+      e.target.style.border = "1px solid black"
     }
 
-    async function changeColorOnHover() {
-        console.log(self.current)
-        setOldColor(pixelColor);
-        setPixelColor(currentColor);
-        setBorder(true)
-      }
-    
-      function resetColor() {
-        if (canChangeColor) {
-          setPixelColor(oldColor);
-          setBorder(false)
-        }
-        setCanChangeColor(true);
-      }
+    const changeColorOnLeave = (e) => {
+      e.target.style.border = "none"
+    }
 
     return (
         <div
-        ref={self}
-        value={[rid, pid]}
         className="pixel"
+        id={`[${rid}, ${pid}]`}
+        onMouseOver={changeColorOnHover}
+        onMouseLeave={changeColorOnLeave}
         // onMouseEnter={changeColorOnHover}
         // onMouseLeave={resetColor}
         // onClick={applyColor}
