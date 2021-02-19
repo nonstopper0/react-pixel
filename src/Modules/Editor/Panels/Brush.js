@@ -37,20 +37,23 @@ export default function Brush(props) {
 
     const handleMouseClick = async (e) => {
         if (e.target.classList.contains('pixel')) {
+            console.log('painting')
             e.preventDefault();
             mouseDown = true;
             let below = document.elementFromPoint(e.clientX, e.clientY)
-            below.style.backgroundColor = props.currentColor
-            if (props.size == 2) {
-                let location = await JSON.parse(e.target.id)
-                let right1 = document.getElementById(`[${location[0]}, ${location[1]+1}]`)
-                let left1 = document.getElementById(`[${location[0]}, ${location[1]-1}]`)
-                let top1 = document.getElementById(`[${location[0]+1}, ${location[1]}]`)
-                let bottom1 = document.getElementById(`[${location[0]-1}, ${location[1]}]`)
-                if (right1) { right1.style.backgroundColor = props.currentColor }
-                if (left1) { left1.style.backgroundColor = props.currentColor }
-                if (top1) { top1.style.backgroundColor = props.currentColor }
-                if (bottom1) { bottom1.style.backgroundColor = props.currentColor }
+            if (below.classList.contains('pixel')) {      
+                below.style.backgroundColor = props.currentColor
+                if (props.size == 2) {
+                    let location = JSON.parse(e.target.id)
+                    let right1 = document.getElementById(`[${location[0]}, ${location[1]+1}]`)
+                    let left1 = document.getElementById(`[${location[0]}, ${location[1]-1}]`)
+                    let top1 = document.getElementById(`[${location[0]+1}, ${location[1]}]`)
+                    let bottom1 = document.getElementById(`[${location[0]-1}, ${location[1]}]`)
+                    if (right1) { right1.style.backgroundColor = props.currentColor }
+                    if (left1) { left1.style.backgroundColor = props.currentColor }
+                    if (top1) { top1.style.backgroundColor = props.currentColor }
+                    if (bottom1) { bottom1.style.backgroundColor = props.currentColor }
+                }
             }
         }
     }
