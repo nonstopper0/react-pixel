@@ -11,7 +11,6 @@ import { BsBrush } from 'react-icons/bs'
 
 // This is the main function all my panels and drawing components pull from. Think of this as the App() of this application.
 export default function Editor(props) {
-    const [historyCounter, setHistoryCounter] = useState(0)
     const [dimension, setDimension] = useState(props.dimension)
     const [zoom, setZoom] = useState(500)
     const [currentColor, setCurrentColor] = useState('#bbbbbb')
@@ -22,11 +21,15 @@ export default function Editor(props) {
     const [brushSize, setBrushSize] = useState(1)
 
     const [dropDownOpen, setDropDownOpen] = useState(false)
-    
+
+    const [number, setNumber] = useState(0)
+
+    let brushHistory = []
+    let brushHistoryCount = 0;
+
+
     useEffect(() => {
-        setHistoryCounter(0)
         sessionStorage.clear();
-        console.log('test')
         document.addEventListener('wheel', handleZoom);
         document.addEventListener('keypress', (e)=>console.log(e.keyCode))
         return function cleanup() {
@@ -104,17 +107,21 @@ export default function Editor(props) {
     }
 
     const storeHistory = (data) => {
-        console.log(`storing data number ${historyCounter} for: ${data}`)
-        storeKey(historyCounter, 'test')
-        setHistoryCounter((historyCounter) => historyCounter + 1)
+        setNumber((previous) => {
+            storeKey(previous, data)
+            return previous + 1
+        })
     }
 
     const removeHistory = () => {
-        if (historyCounter > 0) {
-            console.log(`removing data number ${historyCounter-1}`)
-            removeKey(historyCounter - 1)
-            setHistoryCounter((historyCounter) => historyCounter - 1)
-        }
+        setNumber((num) => {
+            let toRemove = getKey(num-1)
+            console.log(toRemove)
+            return num
+        })
+        // for (let i = 0; i < toRemove[toRemove.length - 1]; i++) {
+        //     console.log(toRemove[i])
+        // }
     }
 
 
@@ -151,7 +158,6 @@ export default function Editor(props) {
                 </div>
                 <button onClick={()=> setBrushSize(brushSize + 1)}>Size +</button>
                 <button onClick={()=> setBrushSize(brushSize - 1)}>Size -</button>
-                <button onClick={()=> storeHistory()}>store</button>
                 <button onClick={()=> removeHistory()}>back</button>
                 { brush ? <Brush history={storeHistory} size={brushSize} currentColor={currentColor} /> : null }
                 
