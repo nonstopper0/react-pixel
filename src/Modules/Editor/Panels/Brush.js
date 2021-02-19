@@ -3,10 +3,10 @@ import React, { useEffect, useState, useRef } from 'react'
 
 export default function Brush(props) {
 
+    const [lastStroke, setLastStroke] = useState(false);
     let mouseDown = false;
-    let currentStroke = []
-    let lastStroke = false
-    let lastPoint = false
+    let currentStroke = [];
+    let lastPoint = false;
 
     useEffect(() => {
 
@@ -39,7 +39,7 @@ export default function Brush(props) {
         if (below === lastPoint) {
             return
         }
-
+        
         lastPoint = below
         handleMouseClick(e)
 
@@ -56,22 +56,13 @@ export default function Brush(props) {
     }
 
     const addToHistory = (storeData) => {
-
-        if (lastStroke) {
-            if (lastStroke[0][1] !== storeData[0][1] && lastStroke[0][0] !== storeData[0][0]) {
-                lastStroke = storeData
-                currentStroke.push(storeData)
-            }
-        } else if (!lastStroke) {
-            lastStroke = storeData
-            currentStroke.push(storeData)
-        }
-
+        console.log(storeData)
+        currentStroke.push(storeData)
     }
 
 
     const handleMouseClick = async (e) => {
-        
+
         e.preventDefault();
 
         if (!e.target.classList.contains('pixel')) {
@@ -80,12 +71,13 @@ export default function Brush(props) {
 
         mouseDown = true;
         let below = document.elementFromPoint(e.clientX, e.clientY)
-        let storeData = [await JSON.parse(e.target.id), below.style.backgroundColor]
-        addToHistory(storeData)
 
         if (!below.classList.contains('pixel')) {      
             return
         }
+
+        let storeData = [await JSON.parse(e.target.id), below.style.backgroundColor]
+        addToHistory(storeData)
         
         below.style.backgroundColor = props.currentColor
         if (props.size === 2) {

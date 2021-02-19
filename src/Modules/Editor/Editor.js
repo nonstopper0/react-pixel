@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { toPng, toSvg } from 'html-to-image'
 import { storeKey, getKey, removeKey } from '../Store/Key'
+import { Undo } from './Panels/Undo'
 import './Editor.scss';
 
 import Canvas from '../Canvas/Canvas';
@@ -22,13 +23,15 @@ export default function Editor(props) {
 
     const [dropDownOpen, setDropDownOpen] = useState(false)
 
+    // number for undo button
     const [number, setNumber] = useState(0)
 
 
     useEffect(() => {
+
         sessionStorage.clear();
         document.addEventListener('wheel', handleZoom);
-        document.addEventListener('keypress', (e)=>console.log(e.keyCode))
+
         return function cleanup() {
             console.log("cleaning")
             document.removeEventListener('wheel', handleZoom)
@@ -41,27 +44,11 @@ export default function Editor(props) {
         } else if (e.deltaY < 0) {
             setZoom((zoom) => zoom < 800 ? zoom + 50 : zoom);
         }
-            // Commenting this out because it is just not needed and overcomplicates.
-            // if (e.x < ((window.innerWidth / 2)-window.innerWidth/4)) {
-            //     setLeft((left) => {
-            //         if (left < 70) {
-            //             return
-            //         }
-            //         return left + 5
-            //     })
-            // } else if (e.x > ((window.innerWidth / 2)+window.innerWidth/4) && left > 0 ) {
-            //     setLeft((left) => {
-            //         if (left > 30) {
-            //             return
-            //         }
-            //         return left - 5
-            //     })
-            // }
     }
 
     // called from Colors.js through props
     const handleColor = (color) => {
-        setCurrentColor(() => color);
+        setCurrentColor((prev) => color);
     }
 
     const handleTool = (e, classToAdd, idToFind, variable, setVar) => {
@@ -104,6 +91,7 @@ export default function Editor(props) {
     }
 
     const storeHistory = (data) => {
+        console.log(data)
         setNumber((previous) => {
             storeKey(previous, data)
             return previous + 1
@@ -112,12 +100,8 @@ export default function Editor(props) {
 
     const removeHistory = () => {
         setNumber((num) => {
-            console.log(num-1)
             let toRemove = getKey(num-1)
-            console.log(toRemove)
-            for (let i = 0; i < toRemove[toRemove.length - 1]; i++) {
-                console.log('hello')
-            }
+            Undo(toRemove)
             return num
         })
 
