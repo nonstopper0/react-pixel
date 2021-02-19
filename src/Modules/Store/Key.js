@@ -1,6 +1,6 @@
 
 export function getKey(key) {
-    if (!key) {
+    if (!key && key !== 0) {
         return null;
     }
 

@@ -24,9 +24,6 @@ export default function Editor(props) {
 
     const [number, setNumber] = useState(0)
 
-    let brushHistory = []
-    let brushHistoryCount = 0;
-
 
     useEffect(() => {
         sessionStorage.clear();
@@ -115,13 +112,15 @@ export default function Editor(props) {
 
     const removeHistory = () => {
         setNumber((num) => {
+            console.log(num-1)
             let toRemove = getKey(num-1)
             console.log(toRemove)
+            for (let i = 0; i < toRemove[toRemove.length - 1]; i++) {
+                console.log('hello')
+            }
             return num
         })
-        // for (let i = 0; i < toRemove[toRemove.length - 1]; i++) {
-        //     console.log(toRemove[i])
-        // }
+
     }
 
 
@@ -158,7 +157,7 @@ export default function Editor(props) {
                 </div>
                 <button onClick={()=> setBrushSize(brushSize + 1)}>Size +</button>
                 <button onClick={()=> setBrushSize(brushSize - 1)}>Size -</button>
-                <button onClick={()=> removeHistory()}>back</button>
+                <button onClick={()=> removeHistory()}>Undo</button>
                 { brush ? <Brush history={storeHistory} size={brushSize} currentColor={currentColor} /> : null }
                 
           </nav>
