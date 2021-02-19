@@ -4,7 +4,7 @@ import React, { useEffect, useState, useRef } from 'react'
 export default function Brush(props) {
     let pixelLocation = 0
     let mouseDown = false;
-    
+
     useEffect(() => {
         console.log('attaching event listener to brush with color: ' + props.currentColor)
         document.getElementById("canvas").addEventListener('mousedown', handleMouseClick );
@@ -19,27 +19,24 @@ export default function Brush(props) {
         }
     }, [props.currentColor, props.size])
 
-    let handleMouseMove = (e) => {
-        e.preventDefault();
+    const handleMouseMove = (e) => {
         if (mouseDown) {
             if (Math.floor(e.timeStamp) % 3 == 0) {
-                console.log('painting')
-                let below = document.elementFromPoint(e.clientX, e.clientY)
-                below.style.backgroundColor = props.currentColor
+                handleMouseClick(e)
             }
         }
     }
 
-    let handleMouseUp = (e) => {
+    const handleMouseUp = (e) => {
         console.log(mouseDown)
         mouseDown = false
     }
 
-    let handleMouseLeave = (e) => {
+    const handleMouseLeave = (e) => {
         mouseDown = false
     }
 
-    let handleMouseClick = async (e) => {
+    const handleMouseClick = async (e) => {
         e.preventDefault();
         mouseDown = true;
         let below = document.elementFromPoint(e.clientX, e.clientY)

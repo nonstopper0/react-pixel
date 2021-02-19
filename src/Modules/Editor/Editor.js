@@ -16,7 +16,10 @@ export default function Editor(props) {
     const [currentColor, setCurrentColor] = useState('#bbbbbb')
     const [gridLines, setGridLines] = useState(false)
     const [hoverHelper, setHoverHelper] = useState(true);
+
     const [brush, openBrush] = useState(false)
+    const [brushSize, setBrushSize] = useState(1)
+
     const [dropDownOpen, setDropDownOpen] = useState(false)
     
     useEffect(() => {
@@ -129,7 +132,9 @@ export default function Editor(props) {
                     }}>Brush</button>
                     <div style={{backgroundColor: currentColor}} id="brush" className="brush-button brush-inactive"></div>
                 </div>
-                { brush ? <Brush currentColor={currentColor} /> : null }
+                <button onClick={()=> setBrushSize(2)}>Size +</button>
+                <button onClick={()=> setBrushSize(1)}>Size -</button>
+                { brush ? <Brush size={brushSize} currentColor={currentColor} /> : null }
                 
           </nav>
           <div className="canvas-container">
