@@ -33,13 +33,14 @@
             position: absolute;
             background-color: rgb(29, 32, 65);
             padding: 20%;
+            left: -10px;
             
             button {
                 cursor: pointer;
                 background: transparent;
                 color: white;
                 border: none;
-                font-family: 'Pixel';\
+                font-family: 'Pixel';
 
                 &:focus {
                     outline: none;

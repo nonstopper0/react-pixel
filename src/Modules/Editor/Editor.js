@@ -20,7 +20,10 @@ export default function Editor(props) {
     
     useEffect(() => {
         document.addEventListener('wheel', handleZoom);
-        return document.removeEventListener('wheel', handleZoom);
+        return function cleanup() {
+            console.log("cleaning")
+            document.removeEventListener('wheel', handleZoom)
+        }
     }, [])
     
     const handleZoom = (e) => {
@@ -58,7 +61,8 @@ export default function Editor(props) {
             console.log(e.target.classList);
     }
 
-    // this code layout is super odd but it works perfectly? I think it is because the react state hooks dont update within the same function when using them this way so manipulating the setDropDown data works fine
+    // this code layout is super odd but it works perfectly? 
+    // I think it is because the react state hooks dont update within the same function when using them this way so manipulating the setDropDown data works fine even when the checks later in the method dont work as the code maybe looks
     const handleDropDown = (e) => {
         if (dropDownOpen) {
             setDropDownOpen(false)
@@ -76,7 +80,7 @@ export default function Editor(props) {
     const downloadImage = async (e) => {
        let canvas = await document.querySelector('#canvas');
 
-       toSvg(canvas)
+       e(canvas)
         .then(data => {
             let img = new Image();
             img.src = data
@@ -98,7 +102,7 @@ export default function Editor(props) {
               <div className="dd-wrapper">
                 <button onClick={(e) => handleDropDown(e)}>File</button>
                 <div className="drop-down hidden File">
-                    <button onClick={()=> downloadImage()}>Download</button>
+                    <button onClick={()=> downloadImage(toSvg)}>Download</button>
                 </div>
               </div>
               <div className="dd-wrapper">
