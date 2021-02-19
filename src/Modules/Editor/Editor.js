@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { toPng, toSvg } from 'html-to-image'
+import { storeKey, getKey, removeKey } from '../Store/Key'
 import './Editor.scss';
 
 import Canvas from '../Canvas/Canvas';
@@ -10,6 +11,7 @@ import { BsBrush } from 'react-icons/bs'
 
 // This is the main function all my panels and drawing components pull from. Think of this as the App() of this application.
 export default function Editor(props) {
+    const [historyCounter, setHistoryCounter] = useState(0)
     const [dimension, setDimension] = useState(props.dimension)
     const [zoom, setZoom] = useState(500)
     const [currentColor, setCurrentColor] = useState('#bbbbbb')
@@ -22,6 +24,9 @@ export default function Editor(props) {
     const [dropDownOpen, setDropDownOpen] = useState(false)
     
     useEffect(() => {
+        setHistoryCounter(0)
+        sessionStorage.clear();
+        console.log('test')
         document.addEventListener('wheel', handleZoom);
         document.addEventListener('keypress', (e)=>console.log(e.keyCode))
         return function cleanup() {
@@ -95,7 +100,21 @@ export default function Editor(props) {
     }
 
     const resize = () => {
-        setDimension(32)
+        setDimension(dimension * 2)
+    }
+
+    const storeHistory = (data) => {
+        console.log(`storing data number ${historyCounter} for: ${data}`)
+        storeKey(historyCounter, 'test')
+        setHistoryCounter((historyCounter) => historyCounter + 1)
+    }
+
+    const removeHistory = () => {
+        if (historyCounter > 0) {
+            console.log(`removing data number ${historyCounter-1}`)
+            removeKey(historyCounter - 1)
+            setHistoryCounter((historyCounter) => historyCounter - 1)
+        }
     }
 
 
@@ -130,9 +149,11 @@ export default function Editor(props) {
                     }}>Brush</button>
                     <div style={{backgroundColor: currentColor}} id="brush" className="brush-button brush-inactive"></div>
                 </div>
-                <button onClick={()=> setBrushSize(2)}>Size +</button>
-                <button onClick={()=> setBrushSize(1)}>Size -</button>
-                { brush ? <Brush size={brushSize} currentColor={currentColor} /> : null }
+                <button onClick={()=> setBrushSize(brushSize + 1)}>Size +</button>
+                <button onClick={()=> setBrushSize(brushSize - 1)}>Size -</button>
+                <button onClick={()=> storeHistory()}>store</button>
+                <button onClick={()=> removeHistory()}>back</button>
+                { brush ? <Brush history={storeHistory} size={brushSize} currentColor={currentColor} /> : null }
                 
           </nav>
           <div className="canvas-container">
