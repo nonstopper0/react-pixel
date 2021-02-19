@@ -13,14 +13,15 @@ export default function Editor(props) {
     const [zoom, setZoom] = useState(500)
     const [top, setTop] = useState(50);
     const [left, setLeft] = useState(50);
-    const [brush, openBrush] = useState(false)
     const [currentColor, setCurrentColor] = useState('#bbbbbb')
     const [gridLines, setGridLines] = useState(false)
     const [hoverHelper, setHoverHelper] = useState(true);
+    const [brush, openBrush] = useState(false)
     const [dropDownOpen, setDropDownOpen] = useState(false)
     
     useEffect(() => {
         document.addEventListener('wheel', handleZoom);
+        document.addEventListener('keypress', (e)=>console.log(e.keyCode))
         return function cleanup() {
             console.log("cleaning")
             document.removeEventListener('wheel', handleZoom)
@@ -56,26 +57,26 @@ export default function Editor(props) {
         setCurrentColor(() => color);
     }
 
-    // called from left-nav to toggle active classes on certain tools
-    const handleTool = (e) => {
-            e.target.classList.toggle('active');
-            console.log(e.target.classList);
+    const handleTool = (e, classToAdd, idToFind, variable, setVar) => {
+        setVar(!variable)
+        document.querySelector(`#${idToFind}`).classList.toggle(classToAdd)
     }
 
     // this code layout is super odd but it works perfectly? 
     // I think it is because the react state hooks dont update within the same function when using them this way so manipulating the setDropDown data works fine even when the checks later in the method dont work as the code maybe looks
-    const handleDropDown = (e) => {
-        if (dropDownOpen) {
-            setDropDownOpen(false)
-            let divToClose = document.querySelector(`.${dropDownOpen}`)
-            divToClose.classList.add('hidden')
-            if (dropDownOpen === e.target.innerHTML) {
+    const handleOpenClose = (e, className, variable, setVar) => {
+        console.log(e.target, className, variable, setVar)
+        if (variable) {
+            setVar(false)
+            let divToClose = document.querySelector(`.${variable}`)
+            divToClose.classList.add(className)
+            if (variable === e.target.id) {
                 return
             }
         }
-        setDropDownOpen(e.target.innerHTML)
-        let divToOpen = document.querySelector(`.${e.target.innerHTML}`)
-        divToOpen.classList.remove('hidden')
+        setVar(e.target.id)
+        let divToOpen = document.querySelector(`.${e.target.id}`)
+        divToOpen.classList.remove(className)
     }
     
     const downloadImage = async (e) => {
@@ -101,19 +102,19 @@ export default function Editor(props) {
       <div className="editor">
           <nav className="top-nav">
               <div className="dd-wrapper">
-                <button onClick={(e) => handleDropDown(e)}>File</button>
+                <button id="File" onClick={(e) => handleOpenClose(e, 'hidden', dropDownOpen, setDropDownOpen)}>File</button>
                 <div className="drop-down hidden File">
                     <button onClick={()=> downloadImage(toSvg)}>Download</button>
                 </div>
               </div>
               <div className="dd-wrapper">
-                <button onClick={(e) => handleDropDown(e)}>Edit</button>
+                <button id="Edit" onClick={(e) => handleOpenClose(e, 'hidden', dropDownOpen, setDropDownOpen)}>Edit</button>
                 <div className="drop-down hidden Edit">
                     <button onClick={() => resize()}>Resize</button>
                 </div>
               </div>
               <div className="dd-wrapper">
-                <button onClick={(e) => handleDropDown(e)}>Help</button>
+                <button id="Help" onClick={(e) => handleOpenClose(e, 'hidden', dropDownOpen, setDropDownOpen)}>Help</button>
                 <div className="drop-down hidden Help">
                 </div>
               </div>
@@ -122,10 +123,12 @@ export default function Editor(props) {
 
                 <Colors changeColor={handleColor}/>
 
-                <button style={{backgroundColor: currentColor}} className="left-buttons" onClick={(e)=> {
-                    openBrush(!brush)
-                    handleTool(e)
-                }}><BsBrush /></button>
+                <div className="button-wrapper">
+                    <button className="left-button" onClick={(e)=> {
+                        handleTool(e, 'brush-inactive', 'brush', brush, openBrush)
+                    }}>Brush</button>
+                    <div style={{backgroundColor: currentColor}} id="brush" className="brush-button brush-inactive"></div>
+                </div>
                 { brush ? <Brush currentColor={currentColor} /> : null }
                 
           </nav>
