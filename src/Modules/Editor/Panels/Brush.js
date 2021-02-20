@@ -27,23 +27,25 @@ export default function Brush(props) {
     }, [props.currentColor, props.size])
 
     const handleMouseMove = (e) => {
+        
+        if (!mouseDown) { 
+            return 
+        }
+        
+        if (Math.floor(e.timeStamp) % 3 !== 0) {
+            return 
+        }
 
         setLastPoint((lastPoint) => {
-            if (!mouseDown) { 
-                return
+            console.log(e.target.id)
+        
+            if (e.target.id === lastPoint) {
+                return lastPoint
             }
-    
-            if (Math.floor(e.timeStamp) % 3 !== 0) {
-                return
-            }
+
             
-            let below = document.elementFromPoint(e.clientX, e.clientY).id
-            if (below === lastPoint) {
-                return
-            }
-            
-            lastPoint = below
             handleMouseClick(e)
+            return e.target.id
         })
     }
  
@@ -65,20 +67,16 @@ export default function Brush(props) {
             return
         }  
 
-        let duplicate = false;
-
         new Promise((resolve, reject) => {
             setLocationArray((locations) => {
                 let stringedData = data[0].toString()
-                console.log(stringedData, locations)
                 if (locations.includes(stringedData)) {
-                    duplicate = true
-                    reject()
                     return locations
                 }
                 resolve()
                 return [...locations, stringedData]
             })
+            reject()
         })
             .then(()=> currentStroke.push(data))
             .catch(() => console.log('duplicate'))
@@ -93,17 +91,13 @@ export default function Brush(props) {
             return
         }
 
-        mouseDown = true;
-        let below = document.elementFromPoint(e.clientX, e.clientY)
-        let storeData = [await JSON.parse(e.target.id), below.style.backgroundColor]
-        handleHistoryStore(storeData)
+        console.log('clicked')
 
-        if (!below.classList.contains('pixel')) {      
-            return
-        }
-
+        mouseDown = true;    
         
-        below.style.backgroundColor = props.currentColor
+        let storeData = [await JSON.parse(e.target.id), e.target.style.backgroundColor]
+        e.target.style.backgroundColor = props.currentColor
+        handleHistoryStore(storeData)
         if (props.size === 2) {
             let location = JSON.parse(e.target.id)
             let right1 = document.getElementById(`[${location[0]}, ${location[1]+1}]`)
