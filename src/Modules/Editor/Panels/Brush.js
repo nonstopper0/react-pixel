@@ -4,9 +4,10 @@ import React, { useEffect, useState, useRef } from 'react'
 export default function Brush(props) {
 
     const [lastStroke, setLastStroke] = useState(false);
+    const [locationArray, setLocationArray] = useState([])
+    const [lastPoint, setLastPoint] = useState(false)
     let mouseDown = false;
     let currentStroke = [];
-    let lastPoint = false;
 
     useEffect(() => {
 
@@ -25,39 +26,62 @@ export default function Brush(props) {
         
     }, [props.currentColor, props.size])
 
-    const handleMouseMove = async (e) => {
+    const handleMouseMove = (e) => {
 
-        if (!mouseDown) { 
-            return
-        }
-
-        if (Math.floor(e.timeStamp) % 3 !== 0) {
-            return
-        }
-        
-        let below = document.elementFromPoint(e.clientX, e.clientY).id
-        if (below === lastPoint) {
-            return
-        }
-        
-        lastPoint = below
-        handleMouseClick(e)
-
+        setLastPoint((lastPoint) => {
+            if (!mouseDown) { 
+                return
+            }
+    
+            if (Math.floor(e.timeStamp) % 3 !== 0) {
+                return
+            }
+            
+            let below = document.elementFromPoint(e.clientX, e.clientY).id
+            if (below === lastPoint) {
+                return
+            }
+            
+            lastPoint = below
+            handleMouseClick(e)
+        })
     }
-
+ 
     const handleMouseUp = (e) => {
 
         mouseDown = false
         if (currentStroke.length > 0) {
             props.history(currentStroke)
             currentStroke = []
+            setLocationArray((previous) => [])
         }
 
     }
 
-    const addToHistory = (storeData) => {
-        console.log(storeData)
-        currentStroke.push(storeData)
+    const handleHistoryStore = (data) => {
+        // first run
+        if (!currentStroke) {
+            currentStroke.push(data)
+            return
+        }  
+
+        let duplicate = false;
+
+        new Promise((resolve, reject) => {
+            setLocationArray((locations) => {
+                let stringedData = data[0].toString()
+                console.log(stringedData, locations)
+                if (locations.includes(stringedData)) {
+                    duplicate = true
+                    reject()
+                    return locations
+                }
+                resolve()
+                return [...locations, stringedData]
+            })
+        })
+            .then(()=> currentStroke.push(data))
+            .catch(() => console.log('duplicate'))
     }
 
 
@@ -71,13 +95,13 @@ export default function Brush(props) {
 
         mouseDown = true;
         let below = document.elementFromPoint(e.clientX, e.clientY)
+        let storeData = [await JSON.parse(e.target.id), below.style.backgroundColor]
+        handleHistoryStore(storeData)
 
         if (!below.classList.contains('pixel')) {      
             return
         }
 
-        let storeData = [await JSON.parse(e.target.id), below.style.backgroundColor]
-        addToHistory(storeData)
         
         below.style.backgroundColor = props.currentColor
         if (props.size === 2) {

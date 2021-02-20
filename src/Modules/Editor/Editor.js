@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { toPng, toSvg } from 'html-to-image'
-import { storeKey, getKey, removeKey } from '../Store/Key'
+import { storeKey, getKey, removeKey } from '../Canvas/Store/Key'
 import { Undo } from './Panels/Undo'
 import './Editor.scss';
 
@@ -121,6 +121,7 @@ export default function Editor(props) {
                 <button id="Edit" onClick={(e) => handleOpenClose(e, 'hidden', dropDownOpen, setDropDownOpen)}>Edit</button>
                 <div className="drop-down hidden Edit">
                     <button onClick={() => resize()}>Resize</button>
+                    <button onClick={() => removeHistory()}>Undo</button>
                 </div>
               </div>
               <div className="dd-wrapper">
@@ -141,7 +142,6 @@ export default function Editor(props) {
                 </div>
                 <button onClick={()=> setBrushSize(brushSize + 1)}>Size +</button>
                 <button onClick={()=> setBrushSize(brushSize - 1)}>Size -</button>
-                <button onClick={()=> removeHistory()}>Undo</button>
                 { brush ? <Brush history={storeHistory} size={brushSize} currentColor={currentColor} /> : null }
                 
           </nav>
