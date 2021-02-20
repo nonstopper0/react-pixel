@@ -91,7 +91,6 @@ export default function Editor(props) {
     }
 
     const storeHistory = (data) => {
-        console.log(data)
         setNumber((previous) => {
             storeKey(previous, data)
             return previous + 1
