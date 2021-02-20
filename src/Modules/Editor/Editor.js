@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { toPng, toSvg } from 'html-to-image'
-import { storeKey, getKey, removeKey } from '../Canvas/Store/Key'
-import { Undo } from './Panels/Undo'
+import { storeKey, getKey, removeKey } from '../Store/Key'
+import { UndoRedo } from './Panels/Undo'
 import './Editor.scss';
 
 import Canvas from '../Canvas/Canvas';
@@ -12,15 +12,17 @@ import { BsBrush } from 'react-icons/bs'
 
 // This is the main function all my panels and drawing components pull from. Think of this as the App() of this application.
 export default function Editor(props) {
+
     const [dimension, setDimension] = useState(props.dimension)
     const [zoom, setZoom] = useState(500)
     const [currentColor, setCurrentColor] = useState('#bbbbbb')
     const [gridLines, setGridLines] = useState(false)
     const [hoverHelper, setHoverHelper] = useState(true);
+    const [backgroundColor, setBackgroundColor] = useState('#ffffff')
 
     const [brush, openBrush] = useState(false)
     const [brushSize, setBrushSize] = useState(1)
-
+    
     const [dropDownOpen, setDropDownOpen] = useState(false)
 
     // number for undo button
@@ -97,13 +99,25 @@ export default function Editor(props) {
         })
     }
 
-    const removeHistory = () => {
+    const handleUndo = () => {
+        if (number > 0) {
+            setNumber((num) => {
+                let toRemove = getKey(num-1)
+                UndoRedo(toRemove, 'undo')
+                return num - 1
+            })
+        }
+    }
+
+    const handleRedo = () => {
         setNumber((num) => {
-            let toRemove = getKey(num-1)
-            Undo(toRemove)
+            let toRedo = getKey(num)
+            if (toRedo) {
+                UndoRedo(toRedo, 'redo')
+                return num + 1
+            }
             return num
         })
-
     }
 
 
@@ -119,8 +133,10 @@ export default function Editor(props) {
               <div className="dd-wrapper">
                 <button id="Edit" onClick={(e) => handleOpenClose(e, 'hidden', dropDownOpen, setDropDownOpen)}>Edit</button>
                 <div className="drop-down hidden Edit">
+                    <button onClick={() => handleUndo()}>Undo</button>
+                    <button onClick={() => handleRedo()}>Redo</button>
                     <button onClick={() => resize()}>Resize</button>
-                    <button onClick={() => removeHistory()}>Undo</button>
+                    <button onClick={() => setGridLines(!gridLines)}>Gridlines</button>
                 </div>
               </div>
               <div className="dd-wrapper">
@@ -145,7 +161,7 @@ export default function Editor(props) {
                 
           </nav>
           <div className="canvas-container">
-            <Canvas currentColor={currentColor} zoom={zoom} dimension={dimension}/>
+            <Canvas grid={gridLines} backgroundColor={backgroundColor} zoom={zoom} dimension={dimension}/>
           </div>
       </div>
     );

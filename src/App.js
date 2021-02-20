@@ -29,12 +29,11 @@ function App() {
 
   return (
     <div className="App">
-      { transition ? <Transition /> : null }
       { editor ? <Editor dimension={dimension}/> : 
-        <React.Fragment>
+        <div className="homepage-container">
           <div className="homepage-header-div">
             <h1>React Pixel</h1>
-            <h3>An application for creating pixel art on the web!</h3>
+            <p>An application for creating pixel art on the web!</p>
           </div>
           <div className="dimension-div">
             <h4>Canvas Size: <span>{dimension}</span> X <span>{dimension}</span></h4>
@@ -42,8 +41,9 @@ function App() {
             <button onClick={() => updateDimensionCheck(dimension * 2)}>+</button>
           </div>
           <button className="start-button" onClick={() => startEditor()}>START NOW</button>
-      </React.Fragment>
+        </div>
     }
+    { transition ? <Transition /> : null }
     </div>
   );
 }

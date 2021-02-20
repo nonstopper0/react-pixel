@@ -42,6 +42,7 @@
                 color: white;
                 border: none;
                 font-family: 'Pixel';
+                margin-bottom: 10px;
 
                 &:focus {
                     outline: none;
@@ -115,4 +116,14 @@
     margin: 0 auto;
     top: 50%;
     left: 50%;
+}
+
+@keyframes Undo {
+    from {
+        opacity: 1;
+    } 50% {
+        opacity: 0;
+    } to {
+        opacity: 1;
+    }
 }

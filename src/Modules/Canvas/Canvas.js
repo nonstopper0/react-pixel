@@ -2,7 +2,7 @@ import React, { useRef } from 'react'
 import Row from "./Row"
 
 const Canvas = React.memo(props => {
-    const { dimension, currentColor, zoom } = props
+    const { dimension, backgroundColor, zoom, grid } = props
 
     const canvasRef = useRef();
 
@@ -11,7 +11,7 @@ const Canvas = React.memo(props => {
 
     for (let i = 0; i < dimension; i++) {
         console.log('redrawing')
-        rows.push(<Row rid={i} key={i} zoom={zoom} dimension={dimension} currentColor={currentColor}/>)
+        rows.push(<Row grid={grid} rid={i} key={i} zoom={zoom} dimension={dimension} backgroundColor={backgroundColor}/>)
     }
 
     return (

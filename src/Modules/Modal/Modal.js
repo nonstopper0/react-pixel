@@ -4,7 +4,7 @@ import './Modal.scss';
 export default function Modal(props) {
   return (
 
-      // This component is overcomplicated and i will come back at a later time to rework this solution.... XXXXXXXXXXXXXXXXXXXXXXX
+      // This component is overcomplicated and i will come back at a later time to rework this solution.... XXXXXXXXXXXXXXXXXXXXXXX NOT IN USE
 
       // A model for configuring mathmatical input to the users liking. 
       // Props Layout: step={['*', 5]} input={[dimension]}  
