@@ -1,15 +1,42 @@
 import React, { useState, useEffect } from 'react';
-import { LioWebRTC } from 'react-liowebrtc';
+import LioWebRTC from 'liowebrtc'
 import { toPng, toSvg } from 'html-to-image';
 import { storeKey, getKey, removeKey } from '../Store/Key';
 import { UndoRedo } from './Panels/Undo';
 import './Editor.scss';
 
+import Transfer, { join } from '../P2P/Transfer'
 import Canvas from '../Canvas/Canvas';
 import Colors from './Panels/Colors';
 import Brush from './Panels/Brush';
 
 import { BsBrush } from 'react-icons/bs';
+
+const webrtc = new LioWebRTC({
+    dataOnly: true
+});
+
+webrtc.on('ready', () => {
+    console.log('Ready...')
+    webrtc.joinRoom('test')
+})
+
+webrtc.on('joinedRoom', (name) => {
+    console.log('joined room: ', name)
+})
+
+webrtc.on('removedPeer', (peer) => {
+    console.log(peer.id, ' left the room')
+})
+
+webrtc.on('createdPeer', (peer) => {
+    console.log(peer.id, ' joined the room!')
+})
+
+webrtc.on('receivedPeerData', (type, data, peer) => {
+    console.log(`data received from: ${peer.id}... contains: ${data}`)
+})
+
 
 // This is the main function all my panels and drawing components pull from. Think of this as the App() of this application.
 export default function Editor(props) {
@@ -35,6 +62,7 @@ export default function Editor(props) {
         sessionStorage.clear();
         document.addEventListener('wheel', handleZoom);
 
+
         return function cleanup() {
             console.log("cleaning")
             document.removeEventListener('wheel', handleZoom)
@@ -51,7 +79,7 @@ export default function Editor(props) {
 
     // called from Colors.js through props
     const handleColor = (color) => {
-
+        // from user: kennebec on StackOverflow
         function hexToRgb(c){
             if(/^#([a-f0-9]{3}){1,2}$/.test(c)){
                 if(c.length== 4){
@@ -105,6 +133,7 @@ export default function Editor(props) {
     }
 
     const storeHistory = (data) => {
+        webrtc.shout("paint-data", "hello")
         setNumber((previous) => {
             storeKey(previous, data)
             return previous + 1
@@ -132,7 +161,6 @@ export default function Editor(props) {
         })
     }
 
-
     return (
       <div className="editor">
           <nav className="top-nav">
@@ -157,6 +185,7 @@ export default function Editor(props) {
                 </div>
               </div>
           </nav>
+
           <nav className="left-nav">
 
                 <Colors changeColor={handleColor}/>

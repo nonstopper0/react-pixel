@@ -60,12 +60,14 @@ export default function Brush(props) {
     }
 
     const handleHistoryStore = (data) => {
-        // first run
+        // first stroke ? 
         if (!currentStroke) {
             currentStroke.push(data)
             return
         }  
 
+        // if current color of the block and the desired color to change it to are the same.
+        // I dont check this within the mousedown function because I dont want to do that check for all different sizes of the brush. Seems pretty heavy.
         if (data[1] === data[2]) {
             return 
         }
