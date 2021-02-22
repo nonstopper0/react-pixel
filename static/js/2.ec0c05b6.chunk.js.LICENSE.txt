@@ -4,6 +4,10 @@ object-assign
 @license MIT
 */
 
+/*! JSON v3.2.6 | http://bestiejs.github.io/json3 | Copyright 2012-2013, Kit Cambridge | http://kit.mit-license.org */
+
+/*! https://mths.be/utf8js v2.0.0 by @mathias */
+
 /** @license React v0.20.1
  * scheduler.production.min.js
  *
