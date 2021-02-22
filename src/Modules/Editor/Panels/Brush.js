@@ -32,7 +32,7 @@ export default function Brush(props) {
             return 
         }
         
-        if (Math.floor(e.timeStamp) % 3 !== 0) {
+        if (Math.floor(e.timeStamp) % 2 === 0) {
             return 
         }
 
@@ -66,19 +66,11 @@ export default function Brush(props) {
             return
         }  
 
-        new Promise((resolve, reject) => {
-            setLocationArray((locations) => {
-                let stringedData = data[0].toString()
-                if (locations.includes(stringedData)) {
-                    return locations
-                }
-                resolve()
-                return [...locations, stringedData]
-            })
-            reject()
-        })
-            .then(()=> currentStroke.push(data))
-            .catch((err) => err)
+        if (data[1] === data[2]) {
+            return 
+        }
+
+        currentStroke.push(data)
     }
 
 

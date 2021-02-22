@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { toPng, toSvg } from 'html-to-image'
-import { storeKey, getKey, removeKey } from '../Store/Key'
-import { UndoRedo } from './Panels/Undo'
+import { LioWebRTC } from 'react-liowebrtc';
+import { toPng, toSvg } from 'html-to-image';
+import { storeKey, getKey, removeKey } from '../Store/Key';
+import { UndoRedo } from './Panels/Undo';
 import './Editor.scss';
 
 import Canvas from '../Canvas/Canvas';
 import Colors from './Panels/Colors';
 import Brush from './Panels/Brush';
 
-import { BsBrush } from 'react-icons/bs'
+import { BsBrush } from 'react-icons/bs';
 
 // This is the main function all my panels and drawing components pull from. Think of this as the App() of this application.
 export default function Editor(props) {
@@ -50,7 +51,18 @@ export default function Editor(props) {
 
     // called from Colors.js through props
     const handleColor = (color) => {
-        setCurrentColor((prev) => color);
+
+        function hexToRgb(c){
+            if(/^#([a-f0-9]{3}){1,2}$/.test(c)){
+                if(c.length== 4){
+                    c= '#'+[c[1], c[1], c[2], c[2], c[3], c[3]].join('');
+                }
+                c= '0x'+c.substring(1);
+                return 'rgb('+[(c>>16)&255, (c>>8)&255, c&255].join(', ')+')';
+            }
+            return '';
+        }
+        setCurrentColor((prev) => hexToRgb(color));
     }
 
     const handleTool = (e, classToAdd, idToFind, variable, setVar) => {
