@@ -22,7 +22,7 @@ export default function Editor(props) {
 
     const [dimension, setDimension] = useState(props.dimension)
     const [zoom, setZoom] = useState(500)
-    const [currentColor, setCurrentColor] = useState('#bbbbbb')
+    const [currentColor, setCurrentColor] = useState('rgb(100, 100, 100)')
     const [gridLines, setGridLines] = useState(false)
     const [hoverHelper, setHoverHelper] = useState(true);
     const [backgroundColor, setBackgroundColor] = useState('#ffffff')
