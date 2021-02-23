@@ -1,4 +1,5 @@
 .editor {
+
     .top-nav {
         z-index: 1;
         width: 100%;
@@ -15,11 +16,10 @@
             right: 2%;
             font-size: 15px;
             color: grey;
-            animation: glow 3s ease;
         }
 
         .dd-wrapper { 
-            margin-left: 3%;
+            margin-left: 2%;
             position: relative;
 
             > button {
@@ -41,9 +41,13 @@
         .drop-down {
             position: absolute;
             background-color: rgb(29, 32, 65);
-            padding: 20%;
-            left: -10px;
-            text-align: left;
+            padding: 10px;
+            left: -5px;
+            display: flex;
+            flex-direction: column;
+            flex-wrap: wrap;
+            justify-content: flex-start;
+            align-items: flex-start;
             
             button {
                 cursor: pointer;

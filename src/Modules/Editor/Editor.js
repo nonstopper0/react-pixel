@@ -1,16 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import LioWebRTC from 'liowebrtc'
 import { toPng, toSvg } from 'html-to-image';
-import { storeKey, getKey, removeKey } from '../Store/Key';
-import { UndoRedo } from './Panels/Undo';
+import { BsBrush } from 'react-icons/bs';
 import './Editor.scss';
 
-import Transfer, { join } from '../P2P/Transfer'
+import { storeKey, getKey, removeKey } from '../Store/Key';
+import { UndoRedo } from './Panels/Undo';
 import Canvas from '../Canvas/Canvas';
 import Colors from './Panels/Colors';
 import Brush from './Panels/Brush';
+import Modal from '../Modal/Modal'
 
-import { BsBrush } from 'react-icons/bs';
 
 const webrtc = new LioWebRTC({
     dataOnly: true
@@ -24,20 +24,22 @@ export default function Editor(props) {
     const [zoom, setZoom] = useState(500)
     const [currentColor, setCurrentColor] = useState('#bbbbbb')
     const [gridLines, setGridLines] = useState(false)
-    const [messages, setMessages] = useState(["Hey, I'm your alert bar..."])
     const [hoverHelper, setHoverHelper] = useState(true);
     const [backgroundColor, setBackgroundColor] = useState('#ffffff')
-
+    
     const [brush, openBrush] = useState(false)
     const [brushSize, setBrushSize] = useState(1)
     
+    const [modalOpen, openModal] = useState(false)
     const [dropDownOpen, setDropDownOpen] = useState(false)
-
+    
     const [isOnline, setIsOnline] = useState(false)
-
+    
     // number for undo button
     const [number, setNumber] = useState(0)
-
+    
+    const [message, setMessage] = useState("Hey, I'm your alert bar...")
+    const messagesRef = useRef()
 
     useEffect(() => {
         webrtc.on('joinedRoom', (name) => {
@@ -46,10 +48,16 @@ export default function Editor(props) {
         
         webrtc.on('removedPeer', (peer) => {
             console.log(peer.id, ' left the room')
+            setMessage(`User ${peer.id} has left the room`)
+        })
+
+        webrtc.on('leftRoom', (name) => {
+            console.log('left')
         })
         
         webrtc.on('createdPeer', (peer) => {
             console.log(peer.id, ' joined the room!')
+            setMessage(`User ${peer.id} has joined the room`)
         })
         
         webrtc.on('receivedPeerData', (type, data, peer) => {
@@ -61,9 +69,11 @@ export default function Editor(props) {
             }
         })
 
+        // making sure all varaibles start fresh if user refreshes. may change at a later date.
         sessionStorage.clear();
-        document.addEventListener('wheel', handleZoom);
+        webrtc.leaveRoom()
 
+        document.addEventListener('wheel', handleZoom);
 
         return function cleanup() {
             console.log("cleaning")
@@ -71,6 +81,7 @@ export default function Editor(props) {
         }
     }, [])
     
+    // called from wheel listener to "zoom" in and out pixels of canvas
     const handleZoom = (e) => {
         if (e.deltaY > 0) {
             setZoom((zoom) => zoom > 50 ? zoom - 50 : zoom);
@@ -83,22 +94,21 @@ export default function Editor(props) {
         if (!isOnline) {
             webrtc.joinRoom(roomName)
             setIsOnline(true)
+            setMessage(`You have succesfully joined room ${roomName}...`)
         }
     }
 
     const handleNetworkLeave = () => {
         if (isOnline) {
-            webrtc.disconnect()
+            webrtc.leaveRoom()
             setIsOnline(false)
+            setMessage(`You have disconnected from MultiDraw room...`)
         }
-    }
-
-    const handleNewMessage = (message) => {
-        setMessages()
     }
 
     // called from Colors.js through props
     const handleColor = (color) => {
+        setMessage(`Changed Brush color`)
         // from user: kennebec on StackOverflow
         function hexToRgb(c){
             if(/^#([a-f0-9]{3}){1,2}$/.test(c)){
@@ -193,20 +203,20 @@ export default function Editor(props) {
               <div className="dd-wrapper">
                 <button id="Edit" onClick={(e) => handleOpenClose(e, 'hidden', dropDownOpen, setDropDownOpen)}>Edit</button>
                 <div className="drop-down hidden Edit">
-                    <button onClick={() => handleUndo()}>Undo</button>
-                    <button onClick={() => handleRedo()}>Redo</button>
-                    <button onClick={() => resize()}>Resize</button>
+                    <button style={{color: isOnline ? 'grey' : 'white'}} disabled={isOnline ? true : false} onClick={() => handleUndo()}>Undo</button>
+                    <button style={{color: isOnline ? 'grey' : 'white'}} disabled={isOnline ? true : false} onClick={() => handleRedo()}>Redo</button>
+                    <button style={{color: isOnline ? 'grey' : 'white'}} disabled={isOnline ? true : false} onClick={() => resize()}>Resize</button>
                     <button onClick={() => setGridLines(!gridLines)}>Gridlines</button>
                 </div>
               </div>
               <div className="dd-wrapper">
-                <button id="MultiDrawer" onClick={(e) => handleOpenClose(e, 'hidden', dropDownOpen, setDropDownOpen)}>MultiDrawer</button>
-                <div className="drop-down hidden MultiDrawer">
-                    <button onClick={() => handleNewtworkJoin('test')}>Join</button>
+                <button id="MultiDraw" onClick={(e) => handleOpenClose(e, 'hidden', dropDownOpen, setDropDownOpen)}>MultiDraw</button>
+                <div className="drop-down hidden MultiDraw">
+                    <button onClick={() => openModal(!modalOpen)}>Join</button>
                     <button onClick={() => handleNetworkLeave()}>Leave</button>
                 </div>
               </div>
-              <p className="message-right">{messages[0]}</p>
+              <p ref={messagesRef} className="message-right">{message}</p>
           </nav>
 
           <nav className="left-nav">
@@ -227,6 +237,11 @@ export default function Editor(props) {
           <div className="canvas-container">
             <Canvas grid={gridLines} backgroundColor={backgroundColor} zoom={zoom} dimension={dimension}/>
           </div>
+
+          { modalOpen ? <Modal close={() => openModal(!modalOpen)} click={(text) => {
+              handleNewtworkJoin(text)
+              openModal(!modalOpen)
+            }} /> : null }
       </div>
     );
 }
