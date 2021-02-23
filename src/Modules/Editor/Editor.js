@@ -16,27 +16,6 @@ const webrtc = new LioWebRTC({
     dataOnly: true
 });
 
-webrtc.on('ready', () => {
-    console.log('Ready...')
-    webrtc.joinRoom('test')
-})
-
-webrtc.on('joinedRoom', (name) => {
-    console.log('joined room: ', name)
-})
-
-webrtc.on('removedPeer', (peer) => {
-    console.log(peer.id, ' left the room')
-})
-
-webrtc.on('createdPeer', (peer) => {
-    console.log(peer.id, ' joined the room!')
-})
-
-webrtc.on('receivedPeerData', (type, data, peer) => {
-    console.log(`data received from: ${peer.id}... contains: ${data}`)
-})
-
 
 // This is the main function all my panels and drawing components pull from. Think of this as the App() of this application.
 export default function Editor(props) {
@@ -45,6 +24,7 @@ export default function Editor(props) {
     const [zoom, setZoom] = useState(500)
     const [currentColor, setCurrentColor] = useState('#bbbbbb')
     const [gridLines, setGridLines] = useState(false)
+    const [messages, setMessages] = useState(["Hey, I'm your alert bar..."])
     const [hoverHelper, setHoverHelper] = useState(true);
     const [backgroundColor, setBackgroundColor] = useState('#ffffff')
 
@@ -53,11 +33,33 @@ export default function Editor(props) {
     
     const [dropDownOpen, setDropDownOpen] = useState(false)
 
+    const [isOnline, setIsOnline] = useState(false)
+
     // number for undo button
     const [number, setNumber] = useState(0)
 
 
     useEffect(() => {
+        webrtc.on('joinedRoom', (name) => {
+            console.log('succesfully joined room ', name)
+        })
+        
+        webrtc.on('removedPeer', (peer) => {
+            console.log(peer.id, ' left the room')
+        })
+        
+        webrtc.on('createdPeer', (peer) => {
+            console.log(peer.id, ' joined the room!')
+        })
+        
+        webrtc.on('receivedPeerData', (type, data, peer) => {
+            console.log('data received....')
+            if (peer.id) {
+                console.log(`data received from: ${peer.id}... contains: ${data}`)
+                // draw peers data on the local clients screen using the Redo function from the undo and redo buttons
+                UndoRedo(data, 'redo')
+            }
+        })
 
         sessionStorage.clear();
         document.addEventListener('wheel', handleZoom);
@@ -75,6 +77,24 @@ export default function Editor(props) {
         } else if (e.deltaY < 0) {
             setZoom((zoom) => zoom < 800 ? zoom + 50 : zoom);
         }
+    }
+
+    const handleNewtworkJoin = (roomName) => {
+        if (!isOnline) {
+            webrtc.joinRoom(roomName)
+            setIsOnline(true)
+        }
+    }
+
+    const handleNetworkLeave = () => {
+        if (isOnline) {
+            webrtc.disconnect()
+            setIsOnline(false)
+        }
+    }
+
+    const handleNewMessage = (message) => {
+        setMessages()
     }
 
     // called from Colors.js through props
@@ -133,7 +153,7 @@ export default function Editor(props) {
     }
 
     const storeHistory = (data) => {
-        webrtc.shout("paint-data", "hello")
+        webrtc.shout("paint-data", data)
         setNumber((previous) => {
             storeKey(previous, data)
             return previous + 1
@@ -180,10 +200,13 @@ export default function Editor(props) {
                 </div>
               </div>
               <div className="dd-wrapper">
-                <button id="Help" onClick={(e) => handleOpenClose(e, 'hidden', dropDownOpen, setDropDownOpen)}>Help</button>
-                <div className="drop-down hidden Help">
+                <button id="MultiDrawer" onClick={(e) => handleOpenClose(e, 'hidden', dropDownOpen, setDropDownOpen)}>MultiDrawer</button>
+                <div className="drop-down hidden MultiDrawer">
+                    <button onClick={() => handleNewtworkJoin('test')}>Join</button>
+                    <button onClick={() => handleNetworkLeave()}>Leave</button>
                 </div>
               </div>
+              <p className="message-right">{messages[0]}</p>
           </nav>
 
           <nav className="left-nav">
