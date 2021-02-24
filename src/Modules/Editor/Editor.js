@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import LioWebRTC from 'liowebrtc'
 import { toPng, toSvg } from 'html-to-image';
-import { BsBrush } from 'react-icons/bs';
+import { BsBrush, BsFillBucketFill } from 'react-icons/bs';
 import './Editor.scss';
 
 import { storeKey, getKey, removeKey } from '../Store/Key';
@@ -27,7 +27,7 @@ export default function Editor(props) {
     const [hoverHelper, setHoverHelper] = useState(true);
     const [backgroundColor, setBackgroundColor] = useState('#ffffff')
     
-    const [brush, openBrush] = useState(false)
+    const [toolOpen, setToolOpen] = useState(false)
     const [brushSize, setBrushSize] = useState(1)
     
     const [modalOpen, openModal] = useState(false)
@@ -123,9 +123,20 @@ export default function Editor(props) {
         setCurrentColor((prev) => hexToRgb(color));
     }
 
-    const handleTool = (e, classToAdd, idToFind, variable, setVar) => {
-        setVar(!variable)
-        document.querySelector(`#${idToFind}`).classList.toggle(classToAdd)
+    const handleTool = (e, classToAdd, idToFind) => {
+        setToolOpen((previousTool) => {
+            if (!previousTool) {
+                console.log('no tool')
+                document.querySelector(`#${idToFind}`).classList.toggle(classToAdd)
+                return idToFind
+            }
+            if (previousTool === idToFind) {
+                document.querySelector(`#${idToFind}`).classList.toggle(classToAdd)
+            }
+            return idToFind
+        })
+
+        // document.querySelector(`#${idToFind}`).classList.toggle(classToAdd)
     }
 
     // this code layout is super odd but it works perfectly? 
@@ -172,6 +183,7 @@ export default function Editor(props) {
 
     const handleUndo = () => {
         if (number > 0) {
+            setMessage('Undo...')
             setNumber((num) => {
                 let toRemove = getKey(num-1)
                 UndoRedo(toRemove, 'undo')
@@ -181,6 +193,7 @@ export default function Editor(props) {
     }
 
     const handleRedo = () => {
+        setMessage('Redo...')
         setNumber((num) => {
             let toRedo = getKey(num)
             if (toRedo) {
@@ -224,21 +237,31 @@ export default function Editor(props) {
                 <Colors changeColor={handleColor}/>
 
                 <div className="button-wrapper">
-                    <button className="left-button" onClick={(e)=> {
-                        handleTool(e, 'brush-inactive', 'brush', brush, openBrush)
-                    }}>Brush</button>
-                    <div style={{backgroundColor: currentColor}} id="brush" className="brush-button brush-inactive"></div>
+                    <button id="brush" className="left-button left-inactive" onClick={(e)=> {
+                        handleTool(e, 'left-inactive', 'brush')
+                    }}><BsBrush /></button>
+                    <button onClick={()=> setBrushSize(brushSize + 1)}>+</button>
+                    <button onClick={()=> setBrushSize(brushSize - 1)}>-</button>
                 </div>
-                <button onClick={()=> setBrushSize(brushSize + 1)}>Size +</button>
-                <button onClick={()=> setBrushSize(brushSize - 1)}>Size -</button>
-                { brush ? <Brush history={storeHistory} size={brushSize} currentColor={currentColor} /> : null }
+                { toolOpen == 'brush' ? <Brush history={storeHistory} size={brushSize} currentColor={currentColor} /> : null }
+
+                <div className="button-wrapper">
+                    <button id="bucket" className="left-button left-inactive" onClick={(e)=> {
+                        handleTool(e, 'left-inactive', 'bucket')
+                    }}><BsFillBucketFill /></button>
+                </div>
                 
           </nav>
           <div className="canvas-container">
             <Canvas grid={gridLines} backgroundColor={backgroundColor} zoom={zoom} dimension={dimension}/>
           </div>
 
-          { modalOpen ? <Modal close={() => openModal(!modalOpen)} click={(text) => {
+          { modalOpen ? <Modal
+            textPlaceholder={'Room Name'} 
+            buttonTitle={'Join'}
+            title={'Join/Create MultiDraw Room'}
+            close={() => openModal(!modalOpen)} 
+            click={(text) => {
               handleNewtworkJoin(text)
               openModal(!modalOpen)
             }} /> : null }

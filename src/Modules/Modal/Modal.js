@@ -3,12 +3,17 @@ import React, { useEffect, useState }  from 'react'
 import './Modal.scss';
 
 export default function Modal(props) {
-  const [textInput, setTextInput] = useState('Room Name')
+  const [textInput, setTextInput] = useState('')
 
   const handleClick = (e) => {
     if (!e.target.classList.contains("modal-component")) {
         props.close()
     }
+  }
+
+  const handleInput = (e) => {
+    e.preventDefault()
+    setTextInput((previous) => e.target.value)
   }
 
   useEffect(() => {
@@ -21,13 +26,14 @@ export default function Modal(props) {
 
   return (
         <div className="Modal modal-component">
-          <h1 className="modal-component">Join MultiDraw Room</h1>
+          <h1 className="modal-component">{props.title}</h1>
           <input 
-            onChange={(input) => setTextInput((previous) => input.target.value)}
+            onChange={handleInput}
+            placeholder={props.textPlaceholder}
             value={textInput}
             className="modal-component"
           />
-          <button className="modal-component" onClick={() => props.click(textInput)}>JOIN</button>
+          <button className="modal-component" onClick={() => props.click(textInput)}>{props.buttonTitle}</button>
         </div>
   );
 }

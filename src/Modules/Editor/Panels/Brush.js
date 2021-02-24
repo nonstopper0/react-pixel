@@ -18,12 +18,12 @@ export default function Brush(props) {
         window.addEventListener('mouseup', handleMouseUp );
 
         return function cleanup() {
+            console.log('removing event listeners')
             window.removeEventListener('mousedown', handleMouseClick );
             window.removeEventListener('mousemove', handleMouseMove );
             window.removeEventListener('mouseleave', handleMouseUp );
             window.removeEventListener('mouseup', handleMouseUp );
         }
-        
     }, [currentColor, size])
 
     const handleMouseMove = (e) => {
