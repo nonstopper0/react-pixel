@@ -25,15 +25,21 @@ export default function Modal(props) {
   )}, [])
 
   return (
-        <div className="Modal modal-component">
-          <h1 className="modal-component">{props.title}</h1>
-          <input 
-            onChange={handleInput}
-            placeholder={props.textPlaceholder}
-            value={textInput}
-            className="modal-component"
-          />
-          <button className="modal-component" onClick={() => props.click(textInput)}>{props.buttonTitle}</button>
-        </div>
+    <React.Fragment>
+      { props.window == "MultiDraw" ?
+          <div className="Modal modal-component">
+            <h1 className="modal-component">Join/Create MultiDraw Room</h1>
+            <input 
+              onChange={handleInput}
+              placeholder="Room Name"
+              value={textInput}
+              className="modal-component"
+            />
+            <button className="modal-component" onClick={() => props.click(textInput)}>Join</button>
+          </div>
+        :
+        <div className="Modal modal-component"></div>
+      }
+    </React.Fragment>
   );
 }

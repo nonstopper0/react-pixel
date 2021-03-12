@@ -24,7 +24,6 @@ export default function Editor(props) {
     const [zoom, setZoom] = useState(500)
     const [currentColor, setCurrentColor] = useState('rgb(100, 100, 100)')
     const [gridLines, setGridLines] = useState(false)
-    const [hoverHelper, setHoverHelper] = useState(true);
     const [backgroundColor, setBackgroundColor] = useState('#ffffff')
     
     const [toolOpen, setToolOpen] = useState(false)
@@ -225,7 +224,7 @@ export default function Editor(props) {
               <div className="dd-wrapper">
                 <button id="MultiDraw" onClick={(e) => handleOpenClose(e, 'hidden', dropDownOpen, setDropDownOpen)}>MultiDraw</button>
                 <div className="drop-down hidden MultiDraw">
-                    <button onClick={() => openModal(!modalOpen)}>Join</button>
+                    <button onClick={() => openModal("MultiDraw")}>Join</button>
                     <button onClick={() => handleNetworkLeave()}>Leave</button>
                 </div>
               </div>
@@ -240,8 +239,8 @@ export default function Editor(props) {
                     <button id="brush" className="left-button left-inactive" onClick={(e)=> {
                         handleTool(e, 'left-inactive', 'brush')
                     }}><BsBrush /></button>
-                    <button onClick={()=> setBrushSize(brushSize + 1)}>+</button>
-                    <button onClick={()=> setBrushSize(brushSize - 1)}>-</button>
+                    <button onClick={()=> brushSize < 3 ? setBrushSize(brushSize + 1) : null}>+</button>
+                    <button onClick={()=> brushSize > 1 ? setBrushSize(brushSize - 1) : null}>-</button>
                 </div>
                 { toolOpen == 'brush' ? <Brush history={storeHistory} size={brushSize} currentColor={currentColor} /> : null }
 
@@ -257,9 +256,7 @@ export default function Editor(props) {
           </div>
 
           { modalOpen ? <Modal
-            textPlaceholder={'Room Name'} 
-            buttonTitle={'Join'}
-            title={'Join/Create MultiDraw Room'}
+            window={modalOpen}
             close={() => openModal(!modalOpen)} 
             click={(text) => {
               handleNewtworkJoin(text)
