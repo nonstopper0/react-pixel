@@ -68,14 +68,13 @@ export default function Editor(props) {
             }
         })
 
-        // making sure all varaibles start fresh if user refreshes. may change at a later date.
+        // making sure all varaibles start fresh if user refreshes. may change this implementation at a later date.
         sessionStorage.clear();
         webrtc.leaveRoom()
 
         document.addEventListener('wheel', handleZoom);
 
         return function cleanup() {
-            console.log("cleaning")
             document.removeEventListener('wheel', handleZoom)
         }
     }, [])
@@ -232,6 +231,8 @@ export default function Editor(props) {
           </nav>
 
           <nav className="left-nav">
+
+                <div className="current-color"></div>
 
                 <Colors changeColor={handleColor}/>
 
