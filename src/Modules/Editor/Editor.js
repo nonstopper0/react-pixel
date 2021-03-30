@@ -133,8 +133,6 @@ export default function Editor(props) {
             }
             return idToFind
         })
-
-        // document.querySelector(`#${idToFind}`).classList.toggle(classToAdd)
     }
 
     // this code layout is super odd but it works perfectly? 
@@ -167,10 +165,14 @@ export default function Editor(props) {
         })
     }
 
+
+    // Resize button
     const resize = () => {
         setDimension(dimension * 2)
     }
 
+
+    // Store brush strokes after mouse click is lifted for Undo button history aswell as to send over to Multidraw peers
     const storeHistory = (data) => {
         webrtc.shout("paint-data", data)
         setNumber((previous) => {
@@ -179,6 +181,8 @@ export default function Editor(props) {
         })
     }
 
+
+    // Grab Undo history from Session and remove strokes back to previous values
     const handleUndo = () => {
         if (number > 0) {
             setMessage('Undo...')
@@ -232,7 +236,7 @@ export default function Editor(props) {
 
           <nav className="left-nav">
 
-                <div className="current-color"></div>
+                <div className="current-color" style={{backgroundColor: currentColor}}></div>
 
                 <Colors changeColor={handleColor}/>
 
