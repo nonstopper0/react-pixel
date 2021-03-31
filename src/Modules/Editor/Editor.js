@@ -23,8 +23,9 @@ export default function Editor(props) {
     const [dimension, setDimension] = useState(props.dimension)
     const [zoom, setZoom] = useState(500)
     const [currentColor, setCurrentColor] = useState('rgb(100, 100, 100)')
+    const [colorPalette, setColorPalette] = useState(['', '', currentColor])
     const [gridLines, setGridLines] = useState(false)
-    const [backgroundColor, setBackgroundColor] = useState('#ffffff')
+    const [backgroundColor, setBackgroundColor] = useState('rgb(255,255,255)')
     
     const [toolOpen, setToolOpen] = useState(false)
     const [brushSize, setBrushSize] = useState(1)
@@ -37,7 +38,7 @@ export default function Editor(props) {
     // number for undo button
     const [number, setNumber] = useState(0)
     
-    const [message, setMessage] = useState("Hey, I'm your alert bar...")
+    const [message, setMessage] = useState("Select a brush to get started!")
     const messagesRef = useRef()
 
     useEffect(() => {
@@ -208,6 +209,7 @@ export default function Editor(props) {
 
     return (
       <div className="editor">
+
           <nav className="top-nav">
               <div className="dd-wrapper">
                 <button id="File" onClick={(e) => handleOpenClose(e, 'hidden', dropDownOpen, setDropDownOpen)}>File</button>
@@ -227,7 +229,7 @@ export default function Editor(props) {
               <div className="dd-wrapper">
                 <button id="MultiDraw" onClick={(e) => handleOpenClose(e, 'hidden', dropDownOpen, setDropDownOpen)}>MultiDraw</button>
                 <div className="drop-down hidden MultiDraw">
-                    <button onClick={() => openModal("MultiDraw")}>Join</button>
+                    <button style={{color: isOnline ? 'grey' : 'white'}} disabled={isOnline ? true : false} onClick={() => openModal("MultiDraw")}>Join</button>
                     <button onClick={() => handleNetworkLeave()}>Leave</button>
                 </div>
               </div>
@@ -247,7 +249,7 @@ export default function Editor(props) {
                     <button onClick={()=> brushSize < 3 ? setBrushSize(brushSize + 1) : null}>+</button>
                     <button onClick={()=> brushSize > 1 ? setBrushSize(brushSize - 1) : null}>-</button>
                 </div>
-                { toolOpen == 'brush' ? <Brush history={storeHistory} size={brushSize} currentColor={currentColor} /> : null }
+                { toolOpen === 'brush' && <Brush history={storeHistory} size={brushSize} currentColor={currentColor} /> }
 
                 <div className="button-wrapper">
                     <button id="bucket" className="left-button left-inactive" onClick={(e)=> {
@@ -256,6 +258,8 @@ export default function Editor(props) {
                 </div>
                 
           </nav>
+
+
           <div className="canvas-container">
             <Canvas grid={gridLines} backgroundColor={backgroundColor} zoom={zoom} dimension={dimension}/>
           </div>

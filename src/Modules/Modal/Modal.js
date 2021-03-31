@@ -38,7 +38,11 @@ export default function Modal(props) {
             <button className="modal-component" onClick={() => props.click(textInput)}>Join</button>
           </div>
         :
-        <div className="Modal modal-component"></div>
+        <div className="Modal modal-component">
+          <h1 className="modal-component">Resize</h1>
+          <button>+</button>
+          <button>-</button>
+        </div>
       }
     </React.Fragment>
   );
