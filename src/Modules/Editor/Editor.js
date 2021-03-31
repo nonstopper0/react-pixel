@@ -22,8 +22,8 @@ export default function Editor(props) {
 
     const [dimension, setDimension] = useState(props.dimension)
     const [zoom, setZoom] = useState(500)
-    const [currentColor, setCurrentColor] = useState('rgb(100, 100, 100)')
-    const [colorPalette, setColorPalette] = useState(['rgb(100, 100, 100', 'rgb(100, 100, 100', 'rgb(100, 100, 100'])
+    const [currentColor, setCurrentColor] = useState('rgb(255, 0, 0)')
+    const [colorPalette, setColorPalette] = useState(['rgb(220, 0, 0)', 'rgb(0, 220, 0)', 'rgb(0, 0, 220)'])
     const [gridLines, setGridLines] = useState(false)
     const [backgroundColor, setBackgroundColor] = useState('rgb(255,255,255)')
     
@@ -128,6 +128,12 @@ export default function Editor(props) {
         setColorPalette((arr) => {
             let newArr = []
             let indexOf = arr.indexOf(convertedColor)
+
+            //if the same color comes through twice, dont make it appear twice in the palette
+            if (convertedColor === arr[0]) {
+                return arr
+            }
+
             if (indexOf === -1) {
                 return [convertedColor, arr[0], arr[1]]
             }
@@ -221,6 +227,17 @@ export default function Editor(props) {
         })
     }
 
+    const handleSave = (name) => {
+        let saveArray = []
+        for (let i = 0; i < dimension; i++) {
+            for (let k = 0; k < dimension; k++) {
+                let toSave = document.getElementById(`[${i}, ${k}]`).style['background-color']
+                saveArray.push(toSave)
+            }
+        }
+        localStorage.setItem('save', saveArray)
+    }
+
     return (
       <div className="editor">
 
@@ -229,6 +246,7 @@ export default function Editor(props) {
                 <button id="File" onClick={(e) => handleOpenClose(e, 'hidden', dropDownOpen, setDropDownOpen)}>File</button>
                 <div className="drop-down hidden File">
                     <button onClick={()=> downloadImage(toSvg)}>Download</button>
+                    <button onClick={()=> handleSave('save')}>Save (Online)</button>
                 </div>
               </div>
               <div className="dd-wrapper">
@@ -253,7 +271,7 @@ export default function Editor(props) {
           <nav className="left-nav">
 
                 <div className="current-color">
-                    <div className="color" style={{backgroundColor: colorPalette[0]}}></div>
+                    <div className="color color-main" style={{backgroundColor: colorPalette[0]}}></div>
                     <div className="color" onClick={() => handleColor(colorPalette[1], false)} style={{backgroundColor: colorPalette[1]}}></div>
                     <div className="color" onClick={() => handleColor(colorPalette[2], false)} style={{backgroundColor: colorPalette[2]}}></div>
                 </div>
