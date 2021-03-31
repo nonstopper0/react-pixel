@@ -227,7 +227,7 @@ export default function Editor(props) {
         })
     }
 
-    const handleSave = (name) => {
+    const handleSave = async (name) => {
         let saveArray = []
         for (let i = 0; i < dimension; i++) {
             for (let k = 0; k < dimension; k++) {
@@ -235,7 +235,45 @@ export default function Editor(props) {
                 saveArray.push(toSave)
             }
         }
-        localStorage.setItem('save', saveArray)
+        let JSONed = await JSON.stringify(saveArray)
+        localStorage.setItem('save', JSONed)
+        setMessage('Canvas Saved...')
+    }
+
+    const handleLoad = async (name) => {
+        let colorArray = await JSON.parse(localStorage.getItem('save'))
+
+        if (!colorArray) {
+            return
+        }
+
+        if (dimension * dimension !== colorArray.length) {
+            setMessage(`Your save file is not the same dimension as your current canvas (${dimension} x ${dimension}) `)
+            return
+        }
+
+        handleReset()
+        let runningTotal = 0
+        for (let i = 0; i < dimension; i++) {
+            for (let k = 0; k < dimension; k++) {
+                let toChange = document.getElementById(`[${i}, ${k}]`)
+                toChange.style['background-color'] = colorArray[runningTotal]
+                runningTotal += 1
+            }
+        }
+        setMessage('Canvas Loaded...')
+    }
+
+    // clear canvas and history
+    const handleReset = () => {
+        sessionStorage.clear();
+        setNumber(0)
+        for (let i = 0; i < dimension; i++) {
+            for (let k = 0; k < dimension; k++) {
+                let toChange = document.getElementById(`[${i}, ${k}]`)
+                toChange.style['background-color'] = "rgb(255,255,255)"
+            }
+        }
     }
 
     return (
@@ -246,7 +284,8 @@ export default function Editor(props) {
                 <button id="File" onClick={(e) => handleOpenClose(e, 'hidden', dropDownOpen, setDropDownOpen)}>File</button>
                 <div className="drop-down hidden File">
                     <button onClick={()=> downloadImage(toSvg)}>Download</button>
-                    <button onClick={()=> handleSave('save')}>Save (Online)</button>
+                    <button onClick={()=> handleSave('save')}>Save</button>
+                    <button onClick={()=> handleLoad('save')}>Load</button>
                 </div>
               </div>
               <div className="dd-wrapper">
@@ -255,6 +294,7 @@ export default function Editor(props) {
                     <button style={{color: isOnline ? 'grey' : 'white'}} disabled={isOnline ? true : false} onClick={() => handleUndo()}>Undo</button>
                     <button style={{color: isOnline ? 'grey' : 'white'}} disabled={isOnline ? true : false} onClick={() => handleRedo()}>Redo</button>
                     <button style={{color: isOnline ? 'grey' : 'white'}} disabled={isOnline ? true : false} onClick={() => resize()}>Resize</button>
+                    <button onClick={() => handleReset()}>Reset</button>
                     <button onClick={() => setGridLines(!gridLines)}>Gridlines</button>
                 </div>
               </div>
