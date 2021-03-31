@@ -23,7 +23,7 @@ export default function Editor(props) {
     const [dimension, setDimension] = useState(props.dimension)
     const [zoom, setZoom] = useState(500)
     const [currentColor, setCurrentColor] = useState('rgb(100, 100, 100)')
-    const [colorPalette, setColorPalette] = useState(['', '', currentColor])
+    const [colorPalette, setColorPalette] = useState(['rgb(100, 100, 100', 'rgb(100, 100, 100', 'rgb(100, 100, 100'])
     const [gridLines, setGridLines] = useState(false)
     const [backgroundColor, setBackgroundColor] = useState('rgb(255,255,255)')
     
@@ -106,8 +106,8 @@ export default function Editor(props) {
     }
 
     // called from Colors.js through props
-    const handleColor = (color) => {
-        setMessage(`Changed Brush color`)
+    const handleColor = (color, convert) => {
+
         // from user: kennebec on StackOverflow
         function hexToRgb(c){
             if(/^#([a-f0-9]{3}){1,2}$/.test(c)){
@@ -119,7 +119,21 @@ export default function Editor(props) {
             }
             return '';
         }
-        setCurrentColor((prev) => hexToRgb(color));
+
+        setMessage(`Changed Brush color`)
+        let convertedColor = convert ? hexToRgb(color) : color
+
+        
+        setCurrentColor((prev) => convertedColor);
+        setColorPalette((arr) => {
+            let newArr = []
+            let indexOf = arr.indexOf(convertedColor)
+            if (indexOf === -1) {
+                return [convertedColor, arr[0], arr[1]]
+            }
+            indexOf === 2 ? newArr = [convertedColor, arr[0], arr[1]] : newArr = [convertedColor, arr[0], arr[2]]
+            return newArr
+        })
     }
 
     const handleTool = (e, classToAdd, idToFind) => {
@@ -238,7 +252,11 @@ export default function Editor(props) {
 
           <nav className="left-nav">
 
-                <div className="current-color" style={{backgroundColor: currentColor}}></div>
+                <div className="current-color">
+                    <div className="color" style={{backgroundColor: colorPalette[0]}}></div>
+                    <div className="color" onClick={() => handleColor(colorPalette[1], false)} style={{backgroundColor: colorPalette[1]}}></div>
+                    <div className="color" onClick={() => handleColor(colorPalette[2], false)} style={{backgroundColor: colorPalette[2]}}></div>
+                </div>
 
                 <Colors changeColor={handleColor}/>
 
