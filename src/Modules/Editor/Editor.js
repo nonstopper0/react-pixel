@@ -27,7 +27,7 @@ export default function Editor(props) {
     const [gridLines, setGridLines] = useState(false)
     const [backgroundColor, setBackgroundColor] = useState('rgb(255,255,255)')
     
-    const [toolOpen, setToolOpen] = useState(false)
+    const [toolOpen, setToolOpen] = useState('brush')
     const [brushSize, setBrushSize] = useState(1)
     
     const [modalOpen, openModal] = useState(false)
@@ -151,7 +151,10 @@ export default function Editor(props) {
             }
             if (previousTool === idToFind) {
                 document.querySelector(`#${idToFind}`).classList.toggle(classToAdd)
+                return false
             }
+            document.querySelector(`#${previousTool}`).classList.toggle(classToAdd)
+            document.querySelector(`#${idToFind}`).classList.toggle(classToAdd)
             return idToFind
         })
     }
@@ -186,10 +189,8 @@ export default function Editor(props) {
         })
     }
 
-
-    // Resize button
-    const resize = () => {
-        setDimension(dimension * 2)
+    const handleResize = (size) => {
+        setDimension((prev) => size)
     }
 
 
@@ -293,7 +294,7 @@ export default function Editor(props) {
                 <div className="drop-down hidden Edit">
                     <button style={{color: isOnline ? 'grey' : 'white'}} disabled={isOnline ? true : false} onClick={() => handleUndo()}>Undo</button>
                     <button style={{color: isOnline ? 'grey' : 'white'}} disabled={isOnline ? true : false} onClick={() => handleRedo()}>Redo</button>
-                    <button style={{color: isOnline ? 'grey' : 'white'}} disabled={isOnline ? true : false} onClick={() => resize()}>Resize</button>
+                    <button style={{color: isOnline ? 'grey' : 'white'}} disabled={isOnline ? true : false} onClick={() => openModal("Resize")}>Resize</button>
                     <button onClick={() => handleReset()}>Reset</button>
                     <button onClick={() => setGridLines(!gridLines)}>Gridlines</button>
                 </div>
@@ -319,7 +320,7 @@ export default function Editor(props) {
                 <Colors changeColor={handleColor}/>
 
                 <div className="button-wrapper">
-                    <button id="brush" className="left-button left-inactive" onClick={(e)=> {
+                    <button id="brush" className="left-button" onClick={(e)=> {
                         handleTool(e, 'left-inactive', 'brush')
                     }}><BsBrush /></button>
                     <button onClick={()=> brushSize < 3 ? setBrushSize(brushSize + 1) : null}>+</button>
@@ -330,7 +331,7 @@ export default function Editor(props) {
                 <div className="button-wrapper">
                     <button id="bucket" className="left-button left-inactive" onClick={(e)=> {
                         handleTool(e, 'left-inactive', 'bucket')
-                    }}><BsFillBucketFill /></button>
+                    }}><BsFillBucketFill />WIP</button>
                 </div>
                 
           </nav>
@@ -341,12 +342,15 @@ export default function Editor(props) {
           </div>
 
           { modalOpen ? <Modal
+            dimension={dimension}
             window={modalOpen}
             close={() => openModal(!modalOpen)} 
-            click={(text) => {
+            handleNetwork={(text) => {
               handleNewtworkJoin(text)
               openModal(!modalOpen)
-            }} /> : null }
+            }}
+            handleResize={handleResize} 
+            /> : null }
       </div>
     );
 }

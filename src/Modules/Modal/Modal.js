@@ -4,6 +4,7 @@ import './Modal.scss';
 
 export default function Modal(props) {
   const [textInput, setTextInput] = useState('')
+  const [size, setSize] = useState(props.dimension)
 
   const handleClick = (e) => {
     if (!e.target.classList.contains("modal-component")) {
@@ -35,13 +36,18 @@ export default function Modal(props) {
               value={textInput}
               className="modal-component"
             />
-            <button className="modal-component" onClick={() => props.click(textInput)}>Join</button>
+            <button className="modal-component" onClick={() => props.handleNetwork(textInput)}>Join</button>
           </div>
         :
         <div className="Modal modal-component">
-          <h1 className="modal-component">Resize</h1>
-          <button>+</button>
-          <button>-</button>
+          <h1 className="h12 modal-component">Resize</h1>
+          <p>current size: {props.dimension} x {props.dimension}</p>
+          <h2>{size} x {size}</h2>
+          <div className="modal-component modal-buttons">
+            <button onClick={()=> { setSize((prev) => prev > 16 ? prev / 2 : prev)}} className="modal-component">-</button>
+            <button onClick={()=> { setSize((prev) => prev < 64 ? prev * 2 : prev)}} className="modal-component">+</button>
+          </div>
+          <button onClick={() => props.handleResize(size)} className="modal-component"></button>
         </div>
       }
     </React.Fragment>
