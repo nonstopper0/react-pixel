@@ -1,7 +1,6 @@
 import React, { useState, useContext } from 'react';
 import './App.scss';
 
-import Modal from './Modules/Modal/Modal'
 import Editor from './Modules/Editor/Editor'
 import Transition from './Modules/Page Transition/Transition'
 

@@ -9,7 +9,8 @@ import { UndoRedo } from './Panels/Undo';
 import Canvas from '../Canvas/Canvas';
 import Colors from './Panels/Colors';
 import Brush from './Panels/Brush';
-import Modal from '../Modal/Modal'
+import RoomModal from '../Modal/RoomModal'
+import ResizeModal from '../Modal/ResizeModal'
 
 
 const webrtc = new LioWebRTC({
@@ -182,7 +183,16 @@ export default function Editor(props) {
         .then(data => {
             let img = new Image();
             img.src = data
-            document.body.appendChild(img)
+            // document.body.appendChild(img)
+            let link = document.createElement("a")
+            link.style.display = 'none';
+            console.log(data)
+            link.setAttribute('download', 'image')
+            link.setAttribute('href', data)
+            document.body.appendChild(link)
+            link.click();
+            link.remove();
+            
         })
         .catch(err => {
             console.log('gone wrong: ', err)
@@ -341,16 +351,24 @@ export default function Editor(props) {
             <Canvas grid={gridLines} backgroundColor={backgroundColor} zoom={zoom} dimension={dimension}/>
           </div>
 
-          { modalOpen ? <Modal
-            dimension={dimension}
-            window={modalOpen}
+        { 
+        modalOpen === "MultiDraw" && 
+        <RoomModal
             close={() => openModal(!modalOpen)} 
             handleNetwork={(text) => {
               handleNewtworkJoin(text)
               openModal(!modalOpen)
             }}
-            handleResize={handleResize} 
-            /> : null }
+        />
+        }
+        { 
+        modalOpen === 'Resize' && 
+        <ResizeModal 
+            dimension={dimension}
+            close={() => openModal(!modalOpen)}
+            handleResize={handleResize}
+        />
+        }
       </div>
     );
 }
