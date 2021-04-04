@@ -146,16 +146,17 @@ export default function Editor(props) {
     const handleTool = (e, classToAdd, idToFind) => {
         setToolOpen((previousTool) => {
             if (!previousTool) {
-                console.log('no tool')
+                console.log('first')
                 document.querySelector(`#${idToFind}`).classList.toggle(classToAdd)
                 return idToFind
             }
             if (previousTool === idToFind) {
-                document.querySelector(`#${idToFind}`).classList.toggle(classToAdd)
-                return false
+                console.log('second')
+                return previousTool
             }
-            document.querySelector(`#${previousTool}`).classList.toggle(classToAdd)
-            document.querySelector(`#${idToFind}`).classList.toggle(classToAdd)
+            console.log('third' + ' previous: ' +  previousTool + ' to add: ' +  classToAdd + ' to find: ' + idToFind)
+            document.querySelector(`#${previousTool}`).classList.add(classToAdd)
+            document.querySelector(`#${idToFind}`).classList.remove(classToAdd)
             return idToFind
         })
     }
@@ -238,8 +239,10 @@ export default function Editor(props) {
         })
     }
 
-    const handleSave = async (name) => {
-        let saveArray = []
+
+    // capture current canvas and return in JSON stringified form.
+    const saveBoard = async () => {
+        let saveArray =[]
         for (let i = 0; i < dimension; i++) {
             for (let k = 0; k < dimension; k++) {
                 let toSave = document.getElementById(`[${i}, ${k}]`).style['background-color']
@@ -247,7 +250,11 @@ export default function Editor(props) {
             }
         }
         let JSONed = await JSON.stringify(saveArray)
-        localStorage.setItem('save', JSONed)
+        return JSONed
+    }
+
+    const handleSave = async (name) => {
+        localStorage.setItem('save', await saveBoard())
         setMessage('Canvas Saved...')
     }
 

@@ -1,23 +1,22 @@
-import { cleanup } from '@testing-library/react';
 import React, { useEffect, useState }  from 'react'
 import './Modal.scss';
 
 export default function ResizeModal(props) {
   const [size, setSize] = useState(props.dimension)
 
+  useEffect(() => {
+    window.addEventListener('mousedown', handleClick )
+
+    return () => {
+      window.removeEventListener('mousedown', handleClick)
+    }
+  }, [])
+
   const handleClick = (e) => {
     if (!e.target.classList.contains("modal-component")) {
         props.close()
     }
   }
-
-  useEffect(() => {
-    window.addEventListener('mousedown', handleClick )
-
-    return cleanup(() => {
-      window.removeEventListener('mousedown', handleClick)
-    }
-  )}, [])
 
   return (
         <div className="Modal modal-component">
@@ -28,7 +27,10 @@ export default function ResizeModal(props) {
             <button onClick={()=> { setSize((prev) => prev > 16 ? prev / 2 : prev)}} className="modal-component">-</button>
             <button onClick={()=> { setSize((prev) => prev < 64 ? prev * 2 : prev)}} className="modal-component">+</button>
           </div>
-          <button onClick={() => props.handleResize(size)} className="modal-component b2">Resize</button>
+          <button onClick={() => {
+            props.close()
+            props.handleResize(size)
+          }} className="modal-component b2">Resize</button>
         </div>
   );
 }

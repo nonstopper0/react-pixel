@@ -1,9 +1,16 @@
-import { cleanup } from '@testing-library/react';
 import React, { useEffect, useState }  from 'react'
 import './Modal.scss';
 
 export default function RoomModal(props) {
   const [textInput, setTextInput] = useState('')
+
+  useEffect(() => {
+    window.addEventListener('mousedown', handleClick )
+
+    return () => {
+      window.removeEventListener('mousedown', handleClick)
+    }
+  }, [])
 
   const handleClick = (e) => {
     if (!e.target.classList.contains("modal-component")) {
@@ -15,14 +22,6 @@ export default function RoomModal(props) {
     e.preventDefault()
     setTextInput((previous) => e.target.value)
   }
-
-  useEffect(() => {
-    window.addEventListener('mousedown', handleClick )
-
-    return cleanup(() => {
-      window.removeEventListener('mousedown', handleClick)
-    }
-  )}, [])
 
   return (
         <div className="Modal modal-component">
