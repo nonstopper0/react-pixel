@@ -20,7 +20,7 @@ const webrtc = new LioWebRTC({
 
 // This is the main function all my panels and drawing components pull from. Think of this as the App() of this application.
 export default function Editor(props) {
-
+    
     const [dimension, setDimension] = useState(props.dimension)
     const [zoom, setZoom] = useState(500)
     const [currentColor, setCurrentColor] = useState('rgb(255, 0, 0)')
@@ -327,7 +327,6 @@ export default function Editor(props) {
           </nav>
 
           <nav className="left-nav">
-
                 <div className="current-color">
                     <div className="color color-main" style={{backgroundColor: colorPalette[0]}}></div>
                     <div className="color" onClick={() => handleColor(colorPalette[1], false)} style={{backgroundColor: colorPalette[1]}}></div>
